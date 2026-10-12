@@ -1,0 +1,15 @@
+[project]
+title = "Testkorpus thesis-editor"
+main = "src/Main.tex"
+bib = ["src/Main.bib"]
+glossary = ["src/Glossary.tex"]
+
+[terms]
+compounds = ["KI-Voice-Agent"]
+variants = [["Nutzer|Nutzers|Nutzern", "Anwender|Anwendern"]]
+
+[terms.forbidden]
+"Werkzeugaufruf*" = "Toolcall"
+
+[git]
+enabled = false

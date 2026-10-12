@@ -1,0 +1,52 @@
+# thesis-editor configuration (template)
+# Optional. Without this file the skill detects main file, bibliography, glossary and markers itself.
+# Copy as thesis-editor.toml into the project root. Paths are relative to the project root.
+# Keys are English, values and messages German.
+
+# Content rules only the reviewer agents can check. Must stay above the first [table].
+project_rules = [
+  # "Jede Modellwahl wird mit Kosten und Qualität begründet.",
+]
+
+[project]
+title = "Titel der Arbeit"
+main = "src/Main.tex"                 # file with \documentclass and \begin{document}
+bib = ["src/Main.bib"]
+glossary = ["src/Glossary.tex"]       # files with \newacronym, for TERM-ABKUERZUNG
+engine = "lualatex"                   # lualatex, xelatex or pdflatex
+
+[markers]
+missing_source = ["quellefehlt"]      # macros for known missing sources, shown red
+open = ["offen", "platz"]             # macros for open points, also without argument, shown orange
+
+[sentences]
+max_words = 35
+max_clauses = 2
+
+[structure]
+skip_sections = ["Anhang"]            # chapter titles where STR rules do not apply
+
+[terms]
+compounds = ["KI-Assistent", "E-Commerce-Plattform"]
+# Synonym groups: one term per entry, forms separated by |. Every deviation from the most frequent is reported.
+variants = [
+  ["Nutzer|Nutzers|Nutzern", "User|Users", "Anwender|Anwendern", "Teilnehmer|Teilnehmern"],
+]
+
+[terms.forbidden]
+# "wrong" = "right", * matches any ending
+"Webseite*" = "Website"
+
+[severity]
+# RULE-ID = "Fehler" | "Warnung" | "Hinweis" | "off"
+# "FMT-QUELLTEXT-ZEILE" = "off"
+
+[exceptions]
+words = []                            # words that are never reported, e.g. "optimal"
+
+[research_questions]
+# FF1 = "Wortlaut der ersten Forschungsfrage"
+
+[git]
+enabled = true                        # versioning check (private repo, uncommitted and unpushed changes)
+check_visibility = true               # ask the GitHub CLI whether the repository is private

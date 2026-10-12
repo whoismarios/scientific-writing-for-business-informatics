@@ -1,0 +1,1025 @@
+# Rule set of thesis-editor
+# Single source for rules, severities, colors and word lists.
+# references/rules.md is generated from it: python3 scripts/cli.py rules
+#
+# severity: Fehler | Warnung | Hinweis | Offen (shown to the writer, therefore German)
+# color:    source (red) | open (orange) | evidence (magenta) | style (blue) | structure (violet) | none
+# check:    linter | bib | agent | environment (Git, does not count towards the index)
+# origin:   SR = writing rules from supervising a master thesis, FB = decided during supervision and writing,
+#           APA7 = APA Publication Manual 7th ed., WI = business informatics convention,
+#           DUDEN = Duden recommendation, TYPO = German typography convention
+# Titles, rationales and examples are German, like the texts under review.
+
+[meta]
+version = "1.1.0"
+name = "thesis-editor"
+
+[colors]
+source = "red"
+open = "orange!85!black"
+evidence = "magenta!80!black"
+style = "blue!70!black"
+structure = "violet!80!black"
+
+# ---------------------------------------------------------------------------
+# Typografie
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "TYP-SEMIKOLON"
+title = "Kein Semikolon"
+severity = "Fehler"
+color = "style"
+check = "linter"
+origin = "SR, FB"
+why = "Semikolons verlängern Satzgefüge und verwischen die Gliederung. Ein Punkt oder ein Nebensatz trennt Gedanken klarer. Die Regel gilt auch in Tabellen, Bildunterschriften und Markern."
+wrong = "Die Stränge laufen parallel; die Fusion folgt danach."
+right = "Die Stränge laufen parallel. Die Fusion folgt danach."
+
+[[rule]]
+id = "TYP-GEDANKENSTRICH"
+title = "Kein Geviertstrich als Einschub"
+severity = "Fehler"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Der Geviertstrich (—) ist ein Stilmittel des Journalismus und der Prosa. Im wissenschaftlichen Text trägt ein Nebensatz oder ein Komma dieselbe Information sachlicher."
+wrong = "ein System — das adaptiert — wurde entwickelt"
+right = "ein System, das adaptiert, wurde entwickelt"
+
+[[rule]]
+id = "TYP-HALBGEVIERT"
+title = "Halbgeviertstrich nur für Bereiche"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR, TYPO"
+why = "Der Halbgeviertstrich (--) steht für Bereiche wie S. 12--15. Mit Leerzeichen eingesetzt ersetzt er einen Gedankenstrich und fällt unter dieselbe Regel."
+wrong = "Die Adaption -- so die Annahme -- wirkt."
+right = "Die Adaption wirkt, so die Annahme."
+
+[[rule]]
+id = "TYP-ANFUEHRUNG"
+title = "Anführungszeichen über \\enquote"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "\\enquote setzt sprachabhängig korrekte Zeichen und hält verschachtelte Zitate konsistent. Von Hand gesetzte Zeichen mischen leicht deutsche und englische Formen."
+wrong = "der sogenannte \"Persona Collapse\""
+right = "der sogenannte \\enquote{Persona Collapse}"
+
+[[rule]]
+id = "TYP-ABKUERZUNG"
+title = "Mehrteilige Abkürzungen mit schmalem Abstand"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR, TYPO"
+why = "Ohne Abstand kleben die Teile zusammen, mit normalem Leerzeichen kann der Umbruch sie trennen. \\, löst beides."
+wrong = "z.B., d. h., u.~a."
+right = "z.\\,B., d.\\,h., u.\\,a."
+
+[[rule]]
+id = "TYP-PROZENT"
+title = "Schmaler Abstand vor Prozentzeichen"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR, DUDEN"
+why = "Zahl und Prozentzeichen werden durch einen schmalen, nicht umbrechenden Abstand getrennt. Ein unmaskiertes % beginnt in LaTeX zudem einen Kommentar und verschluckt den Rest der Zeile."
+wrong = "15\\% oder 15 %"
+right = "15\\,\\%"
+
+[[rule]]
+id = "TYP-EINHEIT"
+title = "Schmaler Abstand bei Gleichungen im Text"
+severity = "Hinweis"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Angaben wie N = 40 im Fließtext brechen sonst am Gleichheitszeichen um."
+wrong = "N = 40"
+right = "$N = 40$ oder N\\,=\\,40"
+
+[[rule]]
+id = "TYP-ZAHLWORT"
+title = "Zahlen bis zwölf ausschreiben"
+severity = "Hinweis"
+color = "style"
+check = "linter"
+origin = "FB, DUDEN"
+why = "Im Fließtext werden die Zahlen null bis zwölf als Wort geschrieben. Ausnahmen sind Maßeinheiten, Prozent, Kennungen (Kapitel 5, Item 3, H1), Tabellen und Reihen mit größeren Zahlen."
+wrong = "Die Studie umfasst 3 Phasen."
+right = "Die Studie umfasst drei Phasen."
+
+[[rule]]
+id = "TYP-AUFZAEHLUNG-LEER"
+title = "Keine Leerzeilen zwischen Aufzählungspunkten"
+severity = "Hinweis"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Leerzeilen zwischen \\item erzeugen je nach Klasse uneinheitliche Abstände."
+wrong = "\\item A\\n\\n\\item B"
+right = "\\item A\\n\\item B"
+
+# ---------------------------------------------------------------------------
+# Sprache und Ton
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "SPR-ICH-WIR"
+title = "Keine Ich- oder Wir-Form"
+severity = "Fehler"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Die Arbeit stellt Ergebnisse und Vorgehen in den Mittelpunkt, nicht die schreibende Person. Wörtliche Zitate und Prompt-Auszüge sind ausgenommen."
+wrong = "Wir zeigen, dass die Adaption wirkt."
+right = "Die Ergebnisse zeigen, dass die Adaption wirkt."
+
+[[rule]]
+id = "SPR-WERTUNG"
+title = "Keine wertenden Adjektive"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Wertungen ersetzen keinen Beleg. Ein Befund überzeugt durch Zahl, Vergleich oder Quelle, nicht durch Adjektive."
+wrong = "Das System liefert beeindruckende Ergebnisse."
+right = "Das System erreicht eine Übereinstimmung von r = 0,61 mit der Selbstauskunft."
+
+[[rule]]
+id = "SPR-SELBSTVERSTAENDLICH"
+title = "Keine Scheinselbstverständlichkeiten"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Wörter wie natürlich oder offensichtlich unterstellen Konsens und überspringen die Begründung. Was offensichtlich ist, braucht das Wort nicht. Was es nicht ist, braucht eine Begründung."
+wrong = "Natürlich beeinflusst die Stimme die Wahrnehmung."
+right = "Die Stimme beeinflusst die Wahrnehmung \\parencite{...}."
+
+[[rule]]
+id = "SPR-FLOSKEL"
+title = "Keine Floskeln"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Floskeln kündigen an, statt auszusagen. Querverweise ersetzen Wendungen wie wie bereits erwähnt."
+wrong = "Es ist wichtig zu beachten, dass die Stränge gewichtet werden."
+right = "Die Stränge werden gewichtet."
+
+[[rule]]
+id = "SPR-HEDGING"
+title = "Keine gestapelten Einschränkungen"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Mehrere Abschwächungen in einem Satz verwässern die Aussage. Eine benannte Einschränkung ist präziser."
+wrong = "Dies könnte möglicherweise eventuell zutreffen."
+right = "Dies trifft nur für die adaptive Bedingung zu."
+
+[[rule]]
+id = "SPR-FUELLWORT"
+title = "Füllwörter vermeiden"
+severity = "Hinweis"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Füllwörter tragen keine Information und verlängern Sätze."
+wrong = "Die Fusion ist eigentlich relativ einfach."
+right = "Die Fusion bildet einen gewichteten Mittelwert."
+
+[[rule]]
+id = "SPR-DOPPELUNG"
+title = "Keine doppelten Partikeln"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Pleonasmen wie zuerst zunächst sagen dasselbe zweimal."
+wrong = "Zuerst wird zunächst der Selbsttest bearbeitet."
+right = "Zunächst wird der Selbsttest bearbeitet."
+
+[[rule]]
+id = "SPR-SIGNIFIKANT"
+title = "Signifikant nur im statistischen Sinn"
+severity = "Hinweis"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "In einer empirischen Arbeit ist signifikant für Testergebnisse reserviert. Umgangssprachlich verwendet führt es Lesende in die Irre."
+wrong = "Die Stimme hat einen signifikanten Einfluss auf das Erleben."
+right = "Die Stimme hat einen deutlichen Einfluss, der Test ist nicht signifikant (p = 0,12)."
+
+[[rule]]
+id = "SPR-NOMINALSTIL"
+title = "Nominalstil auflösen"
+severity = "Hinweis"
+color = "style"
+check = "linter"
+origin = "SR, WI"
+why = "Ketten aus Substantiven auf -ung, -heit, -keit und -ion verstecken die Handlung. Ein Verb macht sichtbar, wer was tut."
+wrong = "Die Durchführung der Erhebung erfolgt nach Abschluss der Implementierung."
+right = "Die Erhebung beginnt, sobald der Prototyp fertig ist."
+
+[[rule]]
+id = "SPR-TEMPUS"
+title = "Zeitform passend zum Inhalt"
+severity = "Hinweis"
+color = "style"
+check = "agent"
+origin = "WI, APA7"
+why = "Präsens für Theorie, Literaturwiedergabe, Systembeschreibung, Verweise und Diskussion. Präteritum für abgeschlossene Handlungen und konkrete Befunde der eigenen Erhebung. Innerhalb eines Absatzes wird nicht ohne Grund gewechselt."
+wrong = "Die Teilnehmenden bewerten den Agenten. Danach füllten sie den Fragebogen aus."
+right = "Die Teilnehmenden bewerteten den Agenten. Danach füllten sie den Fragebogen aus."
+
+[[rule]]
+id = "SPR-WERTUNG-IMPLIZIT"
+title = "Keine versteckten Wertungen"
+severity = "Warnung"
+color = "style"
+check = "agent"
+origin = "SR"
+why = "Wertungen stecken auch in Verben und Konstruktionen (scheitert kläglich, gelingt mühelos, leider). Die Wortliste erfasst sie nicht vollständig."
+wrong = "Bisherige Ansätze scheitern daran, ..."
+right = "Bisherige Ansätze berücksichtigen nicht, ..."
+
+[[rule]]
+id = "SPR-KLARHEIT"
+title = "Verständlich und eindeutig formulieren"
+severity = "Warnung"
+color = "style"
+check = "agent"
+origin = "SR, FB"
+why = "Ein Satz muss beim ersten Lesen verständlich sein. Unklare Bezüge (dies, diese, es), unerklärte Fachbegriffe und Mehrdeutigkeit kosten Gutachtende Zeit und Wohlwollen."
+wrong = "Dies führt dazu, dass es stabiler wird."
+right = "Die Glättung führt dazu, dass der Zustand über die Beiträge stabiler wird."
+
+# ---------------------------------------------------------------------------
+# Satzbau
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "SAT-LAENGE"
+title = "Sätze unter 35 Wörtern"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Ab etwa 35 Wörtern sinkt die Verständlichkeit deutlich. Lange Sätze lassen sich fast immer an einem Und oder einem Relativsatz teilen."
+wrong = "(Satz mit 48 Wörtern)"
+right = "(zwei Sätze mit 22 und 26 Wörtern)"
+
+[[rule]]
+id = "SAT-SCHACHTEL"
+title = "Keine Schachtelsätze"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Ab drei Nebensätzen müssen Lesende zu viele offene Bezüge im Kopf halten."
+wrong = "Der Agent, der die Werte, die der Strang, der ... liefert, nutzt, ..."
+right = "Der Strang liefert Werte. Der Agent nutzt sie, um ..."
+
+[[rule]]
+id = "SAT-GENITIV"
+title = "Keine Genitivketten"
+severity = "Hinweis"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Drei und mehr Genitive hintereinander verschleiern, worauf sich der Satz bezieht."
+wrong = "die Ergebnisse der Evaluation der Nutzerstudie des Systems"
+right = "die Ergebnisse, die die Nutzerstudie zum System liefert"
+
+[[rule]]
+id = "SAT-HAUPTAUSSAGE"
+title = "Hauptaussage im Hauptsatz"
+severity = "Hinweis"
+color = "style"
+check = "agent"
+origin = "SR"
+why = "Was der Satz behauptet, gehört in den Hauptsatz. Im Nebensatz versteckt wird es überlesen."
+wrong = "Es zeigte sich, dass die Adaption das Vertrauen erhöht, was erwartet wurde."
+right = "Die Adaption erhöht das Vertrauen, wie in H1 erwartet."
+
+# ---------------------------------------------------------------------------
+# Begriffe
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "TERM-VERBOTEN"
+title = "Festgelegte Begriffe verwenden"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "FB"
+why = "Die Projektkonfiguration legt Begriffe fest, die durch andere ersetzt werden. Ein Begriff pro Sache verhindert, dass Lesende zwei Dinge vermuten."
+wrong = "Werkzeugaufruf"
+right = "Toolcall"
+
+[[rule]]
+id = "TERM-VARIANTEN"
+title = "Keine rotierenden Synonyme"
+severity = "Hinweis"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Wechseln Nutzer, User und Anwender ohne Grund, fragen sich Lesende, ob verschiedene Gruppen gemeint sind."
+wrong = "Nutzer ... User ... Anwender"
+right = "durchgehend Person oder teilnehmende Person"
+
+[[rule]]
+id = "TERM-KOMPOSITUM"
+title = "Komposita mit Bindestrich"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR, DUDEN"
+why = "Zusammensetzungen mit Abkürzungen, Eigennamen oder englischen Bestandteilen werden im Deutschen durchgekoppelt."
+wrong = "KI Voice Agent, Big Five Modell"
+right = "KI-Voice-Agent, Big-Five-Modell"
+
+[[rule]]
+id = "TERM-ABKUERZUNG"
+title = "Abkürzungen über \\gls"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "FB"
+why = "\\gls schreibt die Abkürzung beim ersten Vorkommen aus und trägt sie ins Abkürzungsverzeichnis ein. Von Hand gesetzte Kurzformen umgehen beides."
+wrong = "Das LLM antwortet ..."
+right = "Das \\gls{a:LLM} antwortet ..."
+
+[[rule]]
+id = "TERM-EMPH"
+title = "\\emph nur bei Erstnennung"
+severity = "Hinweis"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Kursivsatz markiert die Einführung eines fremdsprachigen Fachbegriffs. Wiederholt kursiv gesetzt verliert er diese Funktion."
+wrong = "\\emph{Persona Collapse} ... später erneut \\emph{Persona Collapse}"
+right = "\\emph{Persona Collapse} ... später Persona Collapse"
+
+[[rule]]
+id = "TERM-ANGLIZISMUS"
+title = "Deutsch bevorzugen"
+severity = "Hinweis"
+color = "style"
+check = "agent"
+origin = "SR"
+why = "Wo ein etablierter deutscher Begriff existiert, ist er vorzuziehen. Ausgenommen sind englische Begriffe, die in der Fachgemeinschaft Standard sind oder per Projektglossar festgelegt wurden."
+wrong = "Speech Synthesis"
+right = "Sprachsynthese"
+
+[[rule]]
+id = "TERM-KONSISTENZ"
+title = "Einmal eingeführte Begriffe beibehalten"
+severity = "Warnung"
+color = "style"
+check = "agent"
+origin = "SR"
+why = "Der Linter erkennt nur konfigurierte Synonymgruppen. Inhaltliche Begriffswechsel (Stufe, Level, Grad) erkennt nur ein lesender Blick."
+wrong = "Adaptionsstufe ... Anpassungslevel"
+right = "durchgehend Adaptionsstufe"
+
+# ---------------------------------------------------------------------------
+# Zitation und Belege
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "ZIT-SCHLUESSEL"
+title = "Zitierschlüssel existiert in der Bibliografie"
+severity = "Fehler"
+color = "evidence"
+check = "bib"
+origin = "APA7"
+why = "Ein unbekannter Schlüssel erscheint im PDF als fett gesetzter Schlüssel statt als Quelle."
+wrong = "\\textcite{doenellan2006}"
+right = "\\textcite{donnellanMiniIPIPScales2006}"
+
+[[rule]]
+id = "ZIT-MANUELL"
+title = "Keine von Hand gesetzten Zitate"
+severity = "Warnung"
+color = "evidence"
+check = "linter"
+origin = "APA7"
+why = "Autor und Jahr von Hand geschrieben (Peters et al. 2024) erscheinen nicht im Literaturverzeichnis und folgen nicht dem Zitierstil."
+wrong = "Peters et al. (2024) zeigen ..."
+right = "\\textcite{petersLargeLanguageModels2024c} zeigen ..."
+
+[[rule]]
+id = "ZIT-BELEG"
+title = "Belegsignal ohne Quelle"
+severity = "Hinweis"
+color = "evidence"
+check = "linter"
+origin = "SR"
+why = "Formulierungen wie Studien zeigen oder in der Literatur kündigen einen Beleg an. Fehlt im Satz die Quelle, ist die Aussage unbelegt. Der Linter findet nur Signalwörter, die Entscheidung bleibt beim Menschen."
+wrong = "Studien zeigen, dass Extraversion an der Stimme erkennbar ist."
+right = "Extraversion ist an der Stimme erkennbar \\parencite{...}."
+
+[[rule]]
+id = "ZIT-BEFEHL"
+title = "\\textcite und \\parencite statt \\cite"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "\\cite erzeugt je nach Stil eine uneinheitliche Form. \\textcite steht im Satz, \\parencite in Klammern."
+wrong = "\\cite{goldberg1990}"
+right = "\\textcite{goldberg1990} oder \\parencite{goldberg1990}"
+
+[[rule]]
+id = "ZIT-URL"
+title = "Keine URLs im Fließtext"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "URLs gehören ins Literaturverzeichnis oder in eine Fußnote, im Fließtext unterbrechen sie den Lesefluss."
+wrong = "unter https://example.org beschrieben"
+right = "in der Dokumentation beschrieben \\parencite{...}"
+
+[[rule]]
+id = "ZIT-WOERTLICH"
+title = "Wörtliche Zitate sparsam und mit Seitenzahl"
+severity = "Warnung"
+color = "evidence"
+check = "linter"
+origin = "SR, APA7"
+why = "Wörtliche Zitate brauchen eine Seitenangabe. Ab 40 Wörtern verlangt APA ein abgesetztes Blockzitat, besser ist eine Paraphrase."
+wrong = "\\enquote{...} \\parencite{key}"
+right = "\\enquote{...} \\parencite[S.~12]{key}"
+
+[[rule]]
+id = "ZIT-FUSSNOTE"
+title = "Fußnoten nur für Ergänzungen"
+severity = "Hinweis"
+color = "style"
+check = "agent"
+origin = "SR"
+why = "Inhaltliche Aussagen in Fußnoten werden überlesen. Fußnoten tragen nur ergänzende Hinweise und URLs."
+wrong = "\\footnote{Die Adaption wirkt nur bei hoher Extraversion.}"
+right = "Aussage in den Fließtext, Fußnote für den Link zur Dokumentation"
+
+[[rule]]
+id = "ZIT-TREUE"
+title = "Quelle stützt die Aussage"
+severity = "Warnung"
+color = "evidence"
+check = "agent"
+origin = "APA7, WI"
+why = "Eine Quelle, die die Aussage nicht trägt, wiegt schwerer als eine fehlende. Geprüft wird gegen Titel, Abstract und, sofern vorhanden, den Volltext."
+wrong = "Eine Studie zu Text wird für eine Aussage über Stimme zitiert."
+right = "Die zitierte Quelle untersucht genau die behauptete Beziehung."
+
+[[rule]]
+id = "INH-BELEGPFLICHT"
+title = "Belegpflichtige Aussage ohne Quelle"
+severity = "Warnung"
+color = "evidence"
+check = "agent"
+origin = "SR"
+why = "Jede Aussage, die nicht Allgemeinwissen und nicht eigenes Ergebnis ist, braucht eine Quelle. Der Agent findet auch Aussagen ohne Signalwort."
+wrong = "Menschen vertrauen ähnlichen Gesprächspartnern stärker."
+right = "Menschen vertrauen ähnlichen Gesprächspartnern stärker \\parencite{...}."
+
+# ---------------------------------------------------------------------------
+# Bibliografie
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "BIB-UNGENUTZT"
+title = "Eintrag wird nicht zitiert"
+severity = "Hinweis"
+color = "none"
+check = "bib"
+origin = "APA7"
+why = "Nicht zitierte Einträge erscheinen nur bei \\nocite im Verzeichnis. Sie deuten auf vergessene Belege oder Altlasten hin."
+wrong = "Eintrag in Main.bib ohne Zitat"
+right = "zitieren oder entfernen"
+
+[[rule]]
+id = "BIB-FELDER"
+title = "Pflichtfelder vollständig"
+severity = "Warnung"
+color = "none"
+check = "bib"
+origin = "APA7"
+why = "Ohne Autor, Titel, Jahr oder Zeitschrift erzeugt biblatex-apa unvollständige Einträge."
+wrong = "@article ohne journaltitle"
+right = "@article mit author, title, date, journaltitle"
+
+[[rule]]
+id = "BIB-DOI"
+title = "DOI angeben"
+severity = "Hinweis"
+color = "none"
+check = "bib"
+origin = "APA7"
+why = "APA 7 verlangt den DOI, sofern einer existiert. Er macht die Quelle eindeutig auffindbar."
+wrong = "@article ohne doi"
+right = "doi = {10.1037/0022-3514.59.6.1216}"
+
+[[rule]]
+id = "BIB-DUPLIKAT"
+title = "Keine doppelten Einträge"
+severity = "Warnung"
+color = "none"
+check = "bib"
+origin = "APA7"
+why = "Zwei Schlüssel für dieselbe Quelle führen zu doppelten Einträgen im Verzeichnis und zu Buchstabenzusätzen (2024a, 2024b) ohne Grund."
+wrong = "petersLargeLanguageModels2024 und petersLargeLanguageModels2024c"
+right = "ein Schlüssel"
+
+[[rule]]
+id = "BIB-PREPRINT"
+title = "Preprint auf veröffentlichte Fassung prüfen"
+severity = "Hinweis"
+color = "none"
+check = "bib"
+origin = "WI"
+why = "Begutachtete Fassungen wiegen schwerer als Preprints. Viele arXiv-Arbeiten erscheinen später in Zeitschrift oder Konferenzband."
+wrong = "arXiv:2505.14356 zitiert, obwohl eine Konferenzfassung existiert"
+right = "Konferenzfassung zitieren, Preprint nur ohne veröffentlichte Fassung"
+
+# ---------------------------------------------------------------------------
+# Formatierung und Verweise
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "FMT-FETT"
+title = "Kein Fettdruck zur Betonung"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "Betonung entsteht im wissenschaftlichen Text durch Satzbau. Fettdruck im Fließtext wirkt wie Werbung."
+wrong = "Die Adaption ist \\textbf{entscheidend}."
+right = "Entscheidend für das Ergebnis ist die Adaption."
+
+[[rule]]
+id = "FMT-REF"
+title = "\\cref statt \\ref"
+severity = "Warnung"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "\\cref setzt den Objekttyp (Abbildung, Tabelle, Kapitel) automatisch und einheitlich."
+wrong = "Abbildung \\ref{fig:x}"
+right = "\\cref{fig:x}"
+
+[[rule]]
+id = "FMT-VLINIE"
+title = "Tabellen ohne senkrechte Linien"
+severity = "Fehler"
+color = "style"
+check = "linter"
+origin = "SR"
+why = "booktabs-Tabellen gliedern über Abstände und drei waagrechte Linien. Senkrechte Linien und \\hline machen Tabellen unruhig."
+wrong = "\\begin{tabular}{|l|r|} \\hline"
+right = "\\begin{tabular}{lr} \\toprule"
+
+[[rule]]
+id = "FMT-CAPTION"
+title = "Gleitobjekt mit Beschriftung"
+severity = "Fehler"
+color = "structure"
+check = "linter"
+origin = "SR"
+why = "Ohne \\caption erscheint das Objekt in keinem Verzeichnis und lässt sich nicht beschreiben."
+wrong = "\\begin{figure} ... ohne \\caption"
+right = "\\caption{...}"
+
+[[rule]]
+id = "FMT-LABEL"
+title = "Gleitobjekt mit Label"
+severity = "Fehler"
+color = "structure"
+check = "linter"
+origin = "SR"
+why = "Ohne \\label kann der Text nicht auf das Objekt verweisen."
+wrong = "\\caption{...} ohne \\label"
+right = "\\caption{...}\\label{fig:...}"
+
+[[rule]]
+id = "FMT-VERWEIS-FEHLT"
+title = "Gleitobjekt wird im Text referenziert"
+severity = "Warnung"
+color = "structure"
+check = "linter"
+origin = "SR"
+why = "Jede Abbildung und Tabelle braucht einen Verweis, der sagt, was Lesende darin sehen sollen."
+wrong = "Tabelle ohne \\cref im Text"
+right = "wie \\cref{tab:x} zeigt, ..."
+
+[[rule]]
+id = "FMT-VERWEIS-REIHENFOLGE"
+title = "Verweis vor dem Gleitobjekt"
+severity = "Warnung"
+color = "structure"
+check = "linter"
+origin = "SR"
+why = "Lesende sollen erst erfahren, warum ein Objekt folgt, und es dann sehen."
+wrong = "\\begin{figure}...\\end{figure} danach erst \\cref{fig:x}"
+right = "\\cref{fig:x} im Absatz vor der Abbildung"
+
+[[rule]]
+id = "FMT-VERWEIS-UNBEKANNT"
+title = "Verweisziel existiert"
+severity = "Fehler"
+color = "structure"
+check = "linter"
+origin = "SR"
+why = "Ein Verweis auf ein unbekanntes Label erscheint im PDF als ??."
+wrong = "\\cref{fig:architektur} ohne passendes \\label"
+right = "Label anlegen oder Schreibweise angleichen"
+
+[[rule]]
+id = "FMT-ABB-QUELLE"
+title = "Herkunft jeder Abbildung angeben"
+severity = "Warnung"
+color = "evidence"
+check = "linter"
+origin = "FB, WI"
+why = "Jede Abbildung nennt ihre Herkunft. Eigene Abbildungen tragen Eigene Darstellung, angepasste Vorlagen Eigene Darstellung nach \\textcite{...}, übernommene Abbildungen Quelle: \\textcite{...}."
+wrong = "\\caption{Architektur des Prototyps}"
+right = "\\caption{Architektur des Prototyps. Eigene Darstellung}"
+
+[[rule]]
+id = "FMT-QUELLTEXT-ZEILE"
+title = "Ein Satz pro Quelltextzeile"
+severity = "Hinweis"
+color = "none"
+check = "linter"
+origin = "SR"
+why = "Ein Satz pro Zeile macht Änderungen im Versionsverlauf satzgenau sichtbar und erleichtert Kommentare."
+wrong = "Satz eins. Satz zwei. (in einer Zeile)"
+right = "Satz eins.\\nSatz zwei."
+
+# ---------------------------------------------------------------------------
+# Struktur und Inhalt
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "STR-ORIENTIERUNG"
+title = "Jeder Abschnitt beginnt mit einem Orientierungssatz"
+severity = "Warnung"
+color = "structure"
+check = "linter"
+origin = "SR"
+why = "Folgt eine Unterüberschrift direkt auf eine Überschrift, fehlt die Einordnung, was der Abschnitt leistet und wie seine Teile zusammenhängen."
+wrong = "\\section{Methodik}\\n\\subsection{Design}"
+right = "\\section{Methodik}\\nDer Abschnitt beschreibt Design, Stichprobe und Auswertung.\\n\\subsection{Design}"
+
+[[rule]]
+id = "STR-KURZ"
+title = "Kein Abschnitt unter drei Sätzen"
+severity = "Hinweis"
+color = "structure"
+check = "linter"
+origin = "SR"
+why = "Ein Abschnitt mit ein oder zwei Sätzen trägt keine eigene Gliederungsebene. Er gehört in den benachbarten Abschnitt."
+wrong = "\\subsection{Zeitlimit}\\nEs gibt kein Zeitlimit."
+right = "Satz in den Abschnitt zum Ablauf übernehmen"
+
+[[rule]]
+id = "STR-VERZEICHNIS"
+title = "Abbildungs-, Tabellen- und Abkürzungsverzeichnis vorhanden"
+severity = "Warnung"
+color = "structure"
+check = "linter"
+origin = "WI, APA7"
+why = "Enthält die Arbeit Abbildungen, Tabellen oder Abkürzungen, gehört je ein Verzeichnis nach dem Inhaltsverzeichnis. Geprüft wird der letzte Build über die Recorder-Datei (.fls), ohne Build der Quelltext einschließlich Vorlagen- und Klassendateien."
+wrong = "Zwölf Abbildungen mit \\caption, aber kein \\listoffigures"
+right = "\\listoffigures und \\listoftables nach \\tableofcontents, Abkürzungen über \\printglossary[type=\\acronymtype]"
+
+[[rule]]
+id = "STR-ROTER-FADEN"
+title = "Roter Faden"
+severity = "Warnung"
+color = "structure"
+check = "agent"
+origin = "WI"
+why = "Jedes Kapitel muss erkennbar zur Beantwortung der Forschungsfragen beitragen und an das vorige anschließen."
+wrong = "Ein Grundlagenabschnitt, auf den später nichts zurückgreift"
+right = "Grundlagen, die Methodik und Diskussion ausdrücklich aufgreifen"
+
+[[rule]]
+id = "STR-DOPPELUNG"
+title = "Keine Doppelung zwischen Kapiteln"
+severity = "Warnung"
+color = "structure"
+check = "agent"
+origin = "FB"
+why = "Wiederholte Inhalte kosten Platz und erzeugen Widersprüche, sobald nur eine Stelle geändert wird. Ein Querverweis genügt."
+wrong = "Kapitel 6 erklärt die Fusion erneut wie Kapitel 5"
+right = "Kapitel 6 verweist auf \\cref{sec:fusion} und ergänzt nur die Umsetzung"
+
+[[rule]]
+id = "STR-DETAILTIEFE"
+title = "Details in den Anhang"
+severity = "Hinweis"
+color = "structure"
+check = "agent"
+origin = "FB"
+why = "Vollständige Tabellen, Feldnamen, ER-Diagramme und Prompt-Volltexte belasten den Lesefluss. Im Text steht die Kernaussage mit Verweis auf den Anhang."
+wrong = "Alle 14 Tools mit Parametern im Fließtext"
+right = "Kurzüberblick im Text, vollständige Tabelle in \\cref{app:tools}"
+
+[[rule]]
+id = "STR-UEBERLEITUNG"
+title = "Übergänge zwischen Abschnitten"
+severity = "Hinweis"
+color = "structure"
+check = "agent"
+origin = "WI"
+why = "Ein Kapitel endet mit einer Brücke zum nächsten, sonst wirkt die Arbeit wie eine Sammlung einzelner Texte."
+wrong = "Kapitelende mitten in einer Detailbeschreibung"
+right = "ein Satz, der festhält, was das Kapitel liefert und wofür das nächste es braucht"
+
+[[rule]]
+id = "STR-KAPITELINHALT"
+title = "Kapitel enthält seine Pflichtbestandteile"
+severity = "Warnung"
+color = "structure"
+check = "agent"
+origin = "WI"
+why = "Jeder Kapiteltyp hat erwartete Bestandteile (references/chapter-checklists.md). Fehlt einer, fällt das im Gutachten auf."
+wrong = "Ergebniskapitel ohne Beschreibung der Stichprobe"
+right = "Stichprobe, deskriptive Werte, Hypothesentests"
+
+[[rule]]
+id = "INH-FORSCHUNGSFRAGEN"
+title = "Forschungsfragen werden beantwortet"
+severity = "Fehler"
+color = "structure"
+check = "agent"
+origin = "WI"
+why = "Jede in der Einleitung gestellte Forschungsfrage braucht eine ausdrückliche Antwort im Fazit, und der Weg dorthin muss nachvollziehbar sein."
+wrong = "FF 3b wird im Fazit nicht erwähnt"
+right = "Fazit beantwortet FF 1 bis 3b einzeln mit Verweis auf die Kapitel"
+
+[[rule]]
+id = "INH-HYPOTHESEN"
+title = "Hypothesen gerichtet, operationalisiert und geprüft"
+severity = "Warnung"
+color = "structure"
+check = "agent"
+origin = "WI"
+why = "Eine Hypothese braucht eine theoretische Herleitung, ein Messinstrument, einen festgelegten Test und einen Ergebnisbericht in derselben Benennung."
+wrong = "H2 in Kapitel 4, in Kapitel 7 nicht mehr erwähnt"
+right = "H2 hergeleitet, operationalisiert, getestet und diskutiert"
+
+[[rule]]
+id = "INH-SETZUNG"
+title = "Setzungen offen benennen"
+severity = "Warnung"
+color = "structure"
+check = "agent"
+origin = "FB"
+why = "Festgelegte Parameter (Gewichte, Schwellen, Glättung) sind Entscheidungen, keine Befunde. Sie werden als Setzung bezeichnet und so weit möglich begründet."
+wrong = "Der optimale Glättungsfaktor beträgt 0,4."
+right = "Der Glättungsfaktor ist auf 0,4 gesetzt, das entspricht einem Fenster von etwa vier Beiträgen."
+
+[[rule]]
+id = "INH-LIMITATION"
+title = "Grenzen benannt"
+severity = "Warnung"
+color = "structure"
+check = "agent"
+origin = "WI"
+why = "Jede methodische Entscheidung mit erkennbarem Nachteil gehört in die Limitationen. Fehlt sie dort, wirkt die Arbeit unkritisch."
+wrong = "Eine konstante Stimme ohne Erwähnung in den Limitationen"
+right = "Limitation mit Begründung und Quelle"
+
+[[rule]]
+id = "INH-ZAHLEN"
+title = "Zahlen stimmen überall überein"
+severity = "Fehler"
+color = "structure"
+check = "agent"
+origin = "WI"
+why = "Weicht eine Zahl zwischen Text, Tabelle und Abbildung ab, ist offen, welche gilt. Das trifft die Glaubwürdigkeit der ganzen Auswertung."
+wrong = "Text: N = 48, Tabelle: N = 46"
+right = "überall derselbe Wert, Abweichungen mit Grund"
+
+[[rule]]
+id = "INH-BEGRUENDUNG"
+title = "Entscheidungen begründet"
+severity = "Warnung"
+color = "structure"
+check = "agent"
+origin = "FB, WI"
+why = "Technische und methodische Entscheidungen brauchen eine Begründung. Die Modellwahl nennt immer Geschwindigkeit und Qualität."
+wrong = "Als Modell wird gpt-5.5 eingesetzt."
+right = "gpt-5.5 antwortet im Replay im Median nach 1,1 s und erreicht die höchste Bewertung."
+
+[[rule]]
+id = "INH-PROJEKT"
+title = "Projektregeln eingehalten"
+severity = "Warnung"
+color = "structure"
+check = "agent"
+origin = "FB"
+why = "Die Projektkonfiguration kann inhaltliche Regeln festlegen, etwa den Verzicht auf fremde Normwerte. Sie gelten wie die allgemeinen Regeln."
+wrong = "(abhängig von der Konfiguration)"
+right = "(abhängig von der Konfiguration)"
+
+[[rule]]
+id = "FORM-ERKLAERUNG"
+title = "Formel mit Variablenliste und Rechenbeispiel"
+severity = "Hinweis"
+color = "structure"
+check = "linter"
+origin = "FB"
+why = "Jede abgesetzte Formel braucht eine Erklärung aller Variablen und ein Rechenbeispiel mit echten Werten. Erst dann lässt sie sich im Kolloquium verteidigen."
+wrong = "Formel ohne nachfolgende Erklärung"
+right = "Formel, dann wobei ... und ein Beispiel mit Werten aus der Studie"
+
+[[rule]]
+id = "FORM-VERSTAENDLICH"
+title = "Formeln einfach und notwendig"
+severity = "Warnung"
+color = "structure"
+check = "agent"
+origin = "FB"
+why = "Eine Formel ist nur dann gerechtfertigt, wenn Text allein mehrdeutig wäre. Überflüssige Indizes und dichte Notation erschweren die Verteidigung."
+wrong = "$\\hat{s}_{t,d}^{(k)}$ für einen einfachen Mittelwert"
+right = "$s_d$ mit Erklärung im Text"
+
+[[rule]]
+id = "FORM-NOTATION"
+title = "Einheitliche Notation"
+severity = "Warnung"
+color = "structure"
+check = "agent"
+origin = "WI"
+why = "Ein Symbol bedeutet in der ganzen Arbeit dasselbe, und dieselbe Größe hat überall dasselbe Symbol."
+wrong = "alpha als Glättungsfaktor und als Signifikanzniveau"
+right = "unterschiedliche Symbole oder ausdrückliche Klarstellung"
+
+[[rule]]
+id = "ABB-GESTALTUNG"
+title = "Abbildungen klar und symmetrisch"
+severity = "Hinweis"
+color = "structure"
+check = "agent"
+origin = "FB"
+why = "Diagramme mit gleich großen Boxen, geraden Pfeilen und wenig Text lassen sich erklären. Verschachtelte Schichten mit vielen Nebenpfeilen verwirren."
+wrong = "UML-Sequenzdiagramm mit 14 Nachrichten"
+right = "Fluss mit vier Stationen und je einem Satz Erklärung"
+
+# ---------------------------------------------------------------------------
+# Abgabe und Datensicherung
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "ABG-VERSIONIERUNG"
+title = "Arbeit in einem privaten Git-Repository versionieren"
+severity = "Hinweis"
+color = "none"
+check = "environment"
+origin = "FB"
+why = "Eine Abschlussarbeit entsteht über Monate. Ein Git-Repository mit privatem Remote sichert jeden Zwischenstand, macht Änderungen nachvollziehbar und schützt vor Datenverlust. Privat, weil die Arbeit bis zur Bewertung unveröffentlicht ist."
+wrong = "Thesis nur lokal oder in einem öffentlichen Repository"
+right = "git init, .gitignore für Hilfsdateien und .thesis-editor/, gh repo create --private --source . --push"
+
+[[rule]]
+id = "ABG-GIT-STAND"
+title = "Gesicherter Stand entspricht dem Arbeitsstand"
+severity = "Hinweis"
+color = "none"
+check = "environment"
+origin = "FB"
+why = "Nicht committete Änderungen und nicht gepushte Commits sind nicht gesichert. Vor jeder Pause und vor der Abgabe sollte der geprüfte Stand committet und gepusht sein, damit der Bericht zu einem nachvollziehbaren Stand gehört."
+wrong = "12 geänderte Kapiteldateien seit dem letzten Commit"
+right = "git status ist leer, git push ist erfolgt"
+
+# ---------------------------------------------------------------------------
+# Arbeitsmarker
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "MARK-QUELLE-FEHLT"
+title = "Markierte fehlende Quelle"
+severity = "Offen"
+color = "source"
+check = "linter"
+origin = "FB"
+why = "Vom Schreibenden gesetzter Marker für einen bekannten, noch fehlenden Beleg. Vor der Abgabe muss die Liste leer sein."
+wrong = "\\quellefehlt{Windsor et al. 2019}"
+right = "\\textcite{windsorTranslation2019}"
+
+[[rule]]
+id = "MARK-OFFEN"
+title = "Markierter offener Punkt"
+severity = "Offen"
+color = "open"
+check = "linter"
+origin = "FB"
+why = "Vom Schreibenden gesetzter Marker für eine offene Entscheidung oder fehlende Zahl. Vor der Abgabe muss die Liste leer sein."
+wrong = "\\offen{Zahl der Ausschlüsse}"
+right = "Es wurden 4 Personen ausgeschlossen."
+
+# ---------------------------------------------------------------------------
+# Wortlisten (Platzhalter * passt auf beliebige Endungen)
+# ---------------------------------------------------------------------------
+
+[wordlists]
+first_person = ["ich", "mich", "mir", "mein", "meine*", "wir", "uns", "unser*"]
+judgment = [
+  "toll*", "revolutionär*", "beeindruckend*", "bahnbrechend*", "hervorragend*", "exzellent*",
+  "perfekt*", "fantastisch*", "großartig*", "wunderbar*", "genial*", "sensationell*",
+  "unglaublich*", "enorm*", "gewaltig*", "massiv*", "dramatisch*", "spektakulär*",
+  "erstaunlich*", "faszinierend*", "spannend*", "interessanterweise", "leider",
+  "glücklicherweise", "erfreulicherweise", "bedauerlicherweise", "erschreckend*",
+  "einzigartig*", "unvergleichlich*", "optimal*", "ideal*", "brillant*", "katastrophal*",
+  "kläglich*", "mühelos*", "äußerst", "extrem", "absolut", "zutiefst", "überaus",
+  "bemerkenswert*", "beachtlich*", "vielversprechend*", "überzeugend*", "eindrucksvoll*",
+  "hochinteressant*", "wegweisend*", "herausragend*", "verblüffend*"
+]
+obvious = [
+  "natürlich", "offensichtlich", "selbstverständlich", "bekanntlich", "zweifellos",
+  "zweifelsohne", "zweifelsfrei", "unbestritten*", "klarerweise", "logischerweise",
+  "selbstredend", "fraglos", "ohne Zweifel", "wie jeder weiß"
+]
+phrases = [
+  "wie bereits erwähnt", "wie oben erwähnt", "wie schon erwähnt", "wie bereits beschrieben",
+  "wie bereits dargestellt", "wie bereits gesagt", "wie oben beschrieben",
+  "es ist wichtig zu beachten", "es ist zu beachten, dass", "es sei darauf hingewiesen",
+  "es sei angemerkt", "an dieser Stelle sei", "an dieser Stelle ist",
+  "in diesem Kapitel wird", "in diesem Abschnitt wird", "im Folgenden wird",
+  "im Folgenden soll", "es lässt sich festhalten", "zusammenfassend lässt sich sagen",
+  "abschließend lässt sich sagen", "es ist anzumerken", "nicht zuletzt", "last but not least",
+  "es versteht sich von selbst", "auf den ersten Blick", "im Endeffekt", "unterm Strich",
+  "Fakt ist", "Tatsache ist"
+]
+hedging = [
+  "könnte", "könnten", "möglicherweise", "eventuell", "vielleicht", "unter Umständen",
+  "gegebenenfalls", "vermutlich", "wohl", "scheinbar", "anscheinend", "gewissermaßen",
+  "tendenziell", "durchaus", "unter Umständen", "womöglich", "mitunter", "gewisse*",
+  "in gewisser Weise", "eher"
+]
+fillers = [
+  "eigentlich", "quasi", "sozusagen", "halt", "irgendwie", "ziemlich", "relativ",
+  "an sich", "grundsätzlich", "letztendlich", "schlussendlich", "im Prinzip",
+  "regelrecht", "geradezu", "gänzlich", "letztlich", "ja", "nun mal"
+]
+redundant = [
+  "zuerst zunächst", "zunächst zuerst", "bereits schon", "schon bereits", "zunächst erst",
+  "erst zunächst", "wieder erneut", "erneut wieder", "nochmals wieder", "wieder nochmals",
+  "lediglich nur", "nur lediglich", "einzig und allein", "bereits vorher", "vorher bereits",
+  "gegenseitig miteinander", "miteinander gegenseitig", "zusammen gemeinsam",
+  "gemeinsam zusammen", "neu renoviert", "bereits im Vorfeld", "vorab bereits",
+  "Rückantwort", "Grundprinzip", "Zukunftsprognose", "weiter fortsetzen", "aufoktroyieren"
+]
+evidence_cue = [
+  "Studien zeigen", "Studien belegen", "Untersuchungen zeigen", "Untersuchungen belegen",
+  "die Forschung zeigt", "Forschung zeigt", "in der Literatur", "die Literatur",
+  "nachweislich", "es ist bekannt", "zahlreiche Studien", "viele Studien", "mehrere Studien", "bisherige Arbeiten",
+  "frühere Arbeiten", "bisherige Studien", "frühere Studien", "empirisch belegt",
+  "wissenschaftlich belegt", "wie Studien", "Befunde zeigen", "Befunde deuten"
+]
+significance_context = [
+  "test", "p", "alpha", "niveau", "holm", "statistisch", "effekt", "wilcoxon", "t-test",
+  "konfidenz", "signifikanzniveau", "zweiseitig", "einseitig", "hypothese"
+]
+clause_openers = [
+  "dass", "weil", "obwohl", "wenn", "falls", "da", "ob", "indem", "sodass", "wobei",
+  "während", "nachdem", "bevor", "damit", "sofern", "soweit", "wodurch", "womit",
+  "wofür", "worauf", "der", "die", "das", "dem", "den", "deren", "dessen", "denen",
+  "welche", "welcher", "welches", "welchem", "welchen", "wie", "wo", "als"
+]
+abbreviations = [
+  "z.b.", "d.h.", "u.a.", "bzw.", "vgl.", "ca.", "s.", "abb.", "tab.", "nr.", "al.", "etc.",
+  "ggf.", "inkl.", "evtl.", "usw.", "bspw.", "kap.", "abschn.", "hrsg.", "aufl.", "jh.",
+  "dr.", "prof.", "i.e.", "e.g.", "z.t.", "u.u.", "o.ä.", "sog.", "max.", "min.", "mind.",
+  "bzgl.", "zzgl.", "resp.", "vs.", "ff.", "f.", "eq.", "fig.", "vol.", "pp.", "sek.",
+  "std.", "mio.", "mrd.", "i.d.r.", "s.o.", "s.u.", "m.e.", "insb.", "ugs.", "allg.",
+  "zit.", "orig.", "übers.", "ebd.", "ders.", "dies.", "u.ä.", "v.a."
+]
+number_label_before = [
+  "kapitel", "abschnitt", "unterabschnitt", "abbildung", "abb.", "tabelle", "tab.",
+  "anhang", "gleichung", "formel", "version", "stufe", "item", "items", "block", "phase",
+  "schritt", "runde", "bedingung", "gruppe", "teil", "frage", "szenario", "hypothese",
+  "s.", "seite", "seiten", "nr.", "nummer", "punkt", "platz", "level", "zeile", "spalte",
+  "durchgang", "lauf", "welle", "fall", "sitzung", "dimension", "variante", "modell",
+  "studie", "experiment", "aufgabe", "kriterium", "regel", "grenze", "typ", "klasse",
+  "ebene", "iteration", "faktor", "skalenwert", "wert", "note", "rang", "ziffer", "folie",
+  "listing", "algorithmus", "definition", "satz", "lemma", "beispiel", "ff", "rq", "fragen"
+]
+number_unit_after = [
+  "%", "s", "ms", "min", "h", "hz", "khz", "db", "mb", "gb", "kb", "tb", "px", "pt", "cm",
+  "mm", "m", "km", "kg", "g", "€", "eur", "euro", "usd", "$", "x", "std.", "sek.", "min.",
+  "mio.", "mrd.", "uhr", "jahre", "jahren", "sekunde", "sekunden", "millisekunden", "minute", "minuten",
+  "stunde", "stunden", "tage", "tagen", "wochen", "monate", "monaten", "prozent", "bit", "byte", "kbit", "mbit", "fps", "°", "°c"
+]
