@@ -1,0 +1,46 @@
+# Projektkonfiguration für thesis-lektor (Vorlage)
+# Kopie als lektorat.toml in die Projektwurzel legen. Pfade relativ zur Projektwurzel.
+
+projektregeln = [
+  # Inhaltliche Regeln, die nur die Gutachter-Agenten prüfen können
+  # "Jede Modellwahl wird mit Kosten und Qualität begründet.",
+]
+
+[projekt]
+titel = "Titel der Arbeit"
+main = "src/Main.tex"                 # Datei mit \documentclass und \begin{document}
+bib = ["src/Main.bib"]
+glossar = ["src/Glossary.tex"]        # Dateien mit \newacronym, für TERM-ABKUERZUNG
+engine = "lualatex"                   # lualatex, xelatex oder pdflatex
+
+[marker]
+quelle_fehlt = ["quellefehlt"]        # Makros für bekannte fehlende Quellen
+offen = ["offen", "platz"]            # Makros für offene Punkte, auch ohne Argument
+
+[satz]
+max_woerter = 35
+max_nebensaetze = 2
+
+[struktur]
+ohne_strukturpruefung = ["Anhang"]    # Kapiteltitel, in denen STR-Regeln nicht gelten
+
+[begriffe]
+komposita = ["KI-Assistent", "E-Commerce-Plattform"]
+# Synonymgruppen: je Eintrag ein Begriff, Formen mit | getrennt. Gemeldet wird jede Abweichung vom häufigsten.
+varianten = [
+  ["Nutzer|Nutzers|Nutzern", "User|Users", "Anwender|Anwendern", "Teilnehmer|Teilnehmern"],
+]
+
+[begriffe.verboten]
+# "falsch" = "richtig", * passt auf beliebige Endungen
+"Webseite*" = "Website"
+
+[schwere]
+# Regel-ID = "Fehler" | "Warnung" | "Hinweis" | "aus"
+# "FMT-QUELLTEXT-ZEILE" = "aus"
+
+[ausnahmen]
+woerter = []                          # Wörter, die nie gemeldet werden, z.B. "optimal"
+
+[forschungsfragen]
+# FF1 = "Wortlaut der ersten Forschungsfrage"
