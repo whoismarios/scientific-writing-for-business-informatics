@@ -1,6 +1,6 @@
 # Regelwerk thesis-editor
 
-Version 1.1.0. Erzeugt aus `rules.toml` mit `cli.py rules`, nicht von Hand bearbeiten.
+Version 1.2.0. Erzeugt aus `rules.toml` mit `cli.py rules`, nicht von Hand bearbeiten.
 
 Schweregrade: **Fehler** muss vor der Abgabe behoben sein. **Warnung** sollte behoben oder begründet werden. **Hinweis** ist eine Empfehlung. **Offen** sind Marker des Schreibenden.
 
@@ -87,6 +87,11 @@ Herkunft: SR = Schreibregeln aus der Betreuung einer Masterarbeit, FB = Festlegu
 | `FORM-VERSTAENDLICH` | Formeln einfach und notwendig | Warnung | agent | structure |
 | `FORM-NOTATION` | Einheitliche Notation | Warnung | agent | structure |
 | `ABB-GESTALTUNG` | Abbildungen klar und symmetrisch | Hinweis | agent | structure |
+| `LOG-FEHLER` | Kein LaTeX-Fehler im letzten Build | Fehler | log | structure |
+| `LOG-VERWEIS` | Alle Verweise im PDF aufgelöst | Fehler | log | structure |
+| `LOG-ZITAT` | Alle Zitate im PDF aufgelöst | Fehler | log | evidence |
+| `LOG-UEBERVOLL` | Keine Zeile über den Satzspiegel hinaus | Hinweis | log | style |
+| `LOG-BIBER` | Keine Warnung von biber | Warnung | log | none |
 | `ABG-VERSIONIERUNG` | Arbeit in einem privaten Git-Repository versionieren | Hinweis | environment | none |
 | `ABG-GIT-STAND` | Gesicherter Stand entspricht dem Arbeitsstand | Hinweis | environment | none |
 | `MARK-QUELLE-FEHLT` | Markierte fehlende Quelle | Offen | linter | source |
@@ -798,6 +803,54 @@ Diagramme mit gleich großen Boxen, geraden Pfeilen und wenig Text lassen sich e
 
 - Falsch: UML-Sequenzdiagramm mit 14 Nachrichten
 - Richtig: Fluss mit vier Stationen und je einem Satz Erklärung
+
+
+## LOG
+
+### `LOG-FEHLER` Kein LaTeX-Fehler im letzten Build
+
+Fehler, Prüfung: log, Herkunft: TYPO
+
+Ein Fehler im LaTeX-Lauf führt zu fehlenden Inhalten, falschen Seiten oder einem abgebrochenen PDF. LaTeX läuft mit nonstopmode oft trotzdem durch, der Fehler fällt dann erst beim Lesen auf.
+
+- Falsch: ! LaTeX Error: File `architektur.pdf' not found.
+- Richtig: Datei unter dem angegebenen Pfad ablegen oder den Pfad korrigieren
+
+### `LOG-VERWEIS` Alle Verweise im PDF aufgelöst
+
+Fehler, Prüfung: log, Herkunft: TYPO
+
+Ein nicht aufgelöster Verweis erscheint im PDF als ?? und wirkt unfertig. Ein mehrfach vergebenes Label führt still auf die falsche Stelle.
+
+- Falsch: wie Abbildung ?? zeigt
+- Richtig: Label prüfen, LaTeX zweimal übersetzen
+
+### `LOG-ZITAT` Alle Zitate im PDF aufgelöst
+
+Fehler, Prüfung: log, Herkunft: APA7
+
+Ein nicht aufgelöstes Zitat erscheint im PDF als fett gesetzter Schlüssel statt als Quellenangabe. Meist fehlt der Eintrag in der Bibliografie oder biber ist nicht gelaufen.
+
+- Falsch: nach **goldberg1990** gilt
+- Richtig: nach Goldberg (1990) gilt
+
+### `LOG-UEBERVOLL` Keine Zeile über den Satzspiegel hinaus
+
+Hinweis, Prüfung: log, Herkunft: TYPO
+
+Eine überlange Zeile (Overfull hbox) ragt sichtbar in den Rand. Ursache sind meist lange Wörter, URLs, Code oder zu breite Tabellen. Gemeldet wird ab 2 pt.
+
+- Falsch: Zeile ragt 14 pt in den rechten Rand
+- Richtig: Umformulieren, Trennhilfe \- setzen, URL oder Code umbrechen, Tabelle verkleinern
+
+### `LOG-BIBER` Keine Warnung von biber
+
+Warnung, Prüfung: log, Herkunft: APA7
+
+biber meldet fehlerhafte oder unvollständige Einträge, etwa ungültige ISBN, unbekannte Felder oder doppelte Schlüssel. Solche Einträge erscheinen im Literaturverzeichnis falsch oder unvollständig.
+
+- Falsch: ISBN '978-1-57586-052-7 978-1-57586-053-4' in entry 'reeves1996' is invalid
+- Richtig: eine gültige ISBN je Eintrag
 
 
 ## Abgabe und Datensicherung

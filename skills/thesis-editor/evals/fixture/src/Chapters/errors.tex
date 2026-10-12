@@ -4,7 +4,7 @@
 \section{Typografie}
 \label{sec:typo}
 
-Dieser Abschnitt enthält typografische Fehler in kurzen Sätzen.
+Dieser Abschnitt enthält typografische Fehler in kurzen Sätzen. % expect: LOG-VERWEIS
 Die Stränge laufen parallel; die Fusion folgt danach. % expect: TYP-SEMIKOLON
 Ein System — das adaptiert — wurde gebaut. % expect: TYP-GEDANKENSTRICH
 Die Adaption -- so die Annahme -- wirkt. % expect: TYP-HALBGEVIERT
@@ -21,9 +21,9 @@ Die Studie umfasst 3 Phasen. % expect: TYP-ZAHLWORT
 \end{itemize}
 
 \section{Sprache}
-\label{sec:sprache}
+\label{sec:sprache} % expect: LOG-FEHLER
 
-Dieser Abschnitt enthält sprachliche Fehler in kurzen Sätzen.
+Dieser Abschnitt enthält sprachliche Fehler in kurzen Sätzen. % expect: LOG-ZITAT
 Wir zeigen, dass die Adaption wirkt. % expect: SPR-ICH-WIR
 Das System liefert beeindruckende Ergebnisse. % expect: SPR-WERTUNG
 Natürlich beeinflusst die Stimme die Wahrnehmung. % expect: SPR-SELBSTVERSTAENDLICH
@@ -37,7 +37,7 @@ Die Durchführung der Erhebung erfolgt nach Abschluss der Implementierung, Prüf
 \section{Satzbau}
 \label{sec:satz}
 
-Dieser Abschnitt enthält Fehler im Satzbau.
+Dieser Abschnitt enthält Fehler im Satzbau. % expect: LOG-UEBERVOLL
 Der Prototyp verbindet die Erkennung der Persönlichkeit aus der Sprache mit einer dynamischen Anpassung des Agenten an die erkannte Persönlichkeit und gibt diese Anpassung zusätzlich über die Stimme aus, wobei alle Schritte in einer gemeinsamen Verarbeitungskette ablaufen, die für jede Äußerung neu startet. % expect: SAT-LAENGE
 Die Arbeit zeigt, dass der Agent, der die Werte, die der Strang liefert, nutzt, besser abschneidet. % expect: SAT-SCHACHTEL
 Die Ergebnisse der Evaluation der Nutzerstudie des Systems werden berichtet. % expect: SAT-GENITIV

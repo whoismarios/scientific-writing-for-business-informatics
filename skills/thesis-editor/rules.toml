@@ -4,14 +4,14 @@
 #
 # severity: Fehler | Warnung | Hinweis | Offen (shown to the writer, therefore German)
 # color:    source (red) | open (orange) | evidence (magenta) | style (blue) | structure (violet) | none
-# check:    linter | bib | agent | environment (Git, does not count towards the index)
+# check:    linter | bib | log (last LaTeX build) | agent | environment (Git, does not count towards the index)
 # origin:   SR = writing rules from supervising a master thesis, FB = decided during supervision and writing,
 #           APA7 = APA Publication Manual 7th ed., WI = business informatics convention,
 #           DUDEN = Duden recommendation, TYPO = German typography convention
 # Titles, rationales and examples are German, like the texts under review.
 
 [meta]
-version = "1.1.0"
+version = "1.2.0"
 name = "thesis-editor"
 
 [colors]
@@ -877,6 +877,65 @@ origin = "FB"
 why = "Diagramme mit gleich großen Boxen, geraden Pfeilen und wenig Text lassen sich erklären. Verschachtelte Schichten mit vielen Nebenpfeilen verwirren."
 wrong = "UML-Sequenzdiagramm mit 14 Nachrichten"
 right = "Fluss mit vier Stationen und je einem Satz Erklärung"
+
+# ---------------------------------------------------------------------------
+# Build-Log
+# ---------------------------------------------------------------------------
+
+[[rule]]
+id = "LOG-FEHLER"
+title = "Kein LaTeX-Fehler im letzten Build"
+severity = "Fehler"
+color = "structure"
+check = "log"
+origin = "TYPO"
+why = "Ein Fehler im LaTeX-Lauf führt zu fehlenden Inhalten, falschen Seiten oder einem abgebrochenen PDF. LaTeX läuft mit nonstopmode oft trotzdem durch, der Fehler fällt dann erst beim Lesen auf."
+wrong = "! LaTeX Error: File `architektur.pdf' not found."
+right = "Datei unter dem angegebenen Pfad ablegen oder den Pfad korrigieren"
+
+[[rule]]
+id = "LOG-VERWEIS"
+title = "Alle Verweise im PDF aufgelöst"
+severity = "Fehler"
+color = "structure"
+check = "log"
+origin = "TYPO"
+why = "Ein nicht aufgelöster Verweis erscheint im PDF als ?? und wirkt unfertig. Ein mehrfach vergebenes Label führt still auf die falsche Stelle."
+wrong = "wie Abbildung ?? zeigt"
+right = "Label prüfen, LaTeX zweimal übersetzen"
+
+[[rule]]
+id = "LOG-ZITAT"
+title = "Alle Zitate im PDF aufgelöst"
+severity = "Fehler"
+color = "evidence"
+check = "log"
+origin = "APA7"
+why = "Ein nicht aufgelöstes Zitat erscheint im PDF als fett gesetzter Schlüssel statt als Quellenangabe. Meist fehlt der Eintrag in der Bibliografie oder biber ist nicht gelaufen."
+wrong = "nach **goldberg1990** gilt"
+right = "nach Goldberg (1990) gilt"
+
+[[rule]]
+id = "LOG-UEBERVOLL"
+title = "Keine Zeile über den Satzspiegel hinaus"
+severity = "Hinweis"
+color = "style"
+check = "log"
+origin = "TYPO"
+why = "Eine überlange Zeile (Overfull hbox) ragt sichtbar in den Rand. Ursache sind meist lange Wörter, URLs, Code oder zu breite Tabellen. Gemeldet wird ab 2 pt."
+wrong = "Zeile ragt 14 pt in den rechten Rand"
+right = "Umformulieren, Trennhilfe \\- setzen, URL oder Code umbrechen, Tabelle verkleinern"
+
+[[rule]]
+id = "LOG-BIBER"
+title = "Keine Warnung von biber"
+severity = "Warnung"
+color = "none"
+check = "log"
+origin = "APA7"
+why = "biber meldet fehlerhafte oder unvollständige Einträge, etwa ungültige ISBN, unbekannte Felder oder doppelte Schlüssel. Solche Einträge erscheinen im Literaturverzeichnis falsch oder unvollständig."
+wrong = "ISBN '978-1-57586-052-7 978-1-57586-053-4' in entry 'reeves1996' is invalid"
+right = "eine gültige ISBN je Eintrag"
 
 # ---------------------------------------------------------------------------
 # Abgabe und Datensicherung

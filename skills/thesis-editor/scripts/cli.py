@@ -12,6 +12,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import bib  # noqa: E402
+import buildlog  # noqa: E402
+import changes  # noqa: E402
 import environment  # noqa: E402
 from ruleset import OUT_DIR, RULESET, RULES, SEVERITY_RANK, SKILL_DIR, config_path, from_dict, load_config  # noqa: E402
 from linter import Linter  # noqa: E402
@@ -21,6 +23,7 @@ from texmodel import Project  # noqa: E402
 def run_dir(root):
     d = Path(root) / OUT_DIR / "run"
     (d / "agents").mkdir(parents=True, exist_ok=True)
+    (d / "defense").mkdir(exist_ok=True)
     return d
 
 
@@ -123,16 +126,22 @@ def cmd_init(a):
     print(f"Angelegt: {target}")
 
 
-def run_checks(root, only=None):
+def run_checks(root, only=None, since=None):
     cfg = configuration(root)
     project = Project(root, cfg)
     linter = Linter(project)
     findings = linter.run()
     bib_findings, bib_stats = bib.check(project)
     findings += bib_findings
+    bib_paths = [project.root / b for b in cfg["project"].get("bib", []) if (project.root / b).exists()]
+    newest = max([p.stat().st_mtime for p in project.files + bib_paths] or [0])
+    log_findings, log_status = buildlog.check(project, newest)
+    known = {(b.file, b.line, b.rule) for b in findings}
+    twins = {"LOG-VERWEIS": "FMT-VERWEIS-UNBEKANNT", "LOG-ZITAT": "ZIT-SCHLUESSEL"}
+    findings += [b for b in log_findings if (b.file, b.line, twins.get(b.rule)) not in known]
     list_findings, list_status = environment.check_lists(project)
     git_findings, git_status = environment.git(project)
-    if not only:
+    if not only and not since:
         findings += list_findings + git_findings
     words = linter.words_by_file
     formula_counts = {}
@@ -144,6 +153,16 @@ def run_checks(root, only=None):
         selected = project.select(only)
         findings = [b for b in findings if b.file in selected or (b.source == "bib" and b.rule == "ZIT-SCHLUESSEL" and b.file in selected)]
         words = {f: n for f, n in words.items() if f in selected}
+    if since:
+        changed = changes.changed_lines(project.root, since, [project.rel(p) for p in project.files + bib_paths])
+        findings = [b for b in findings if b.line in changed.get(b.file, ())]
+        counted, sentence_count = {}, 0
+        for s in project.sentences:
+            f = project.rel(s.line.file)
+            if s.line.no in changed.get(f, ()) and f in words:
+                counted[f] = counted.get(f, 0) + len(s.words)
+                sentence_count += 1
+        words = counted
     findings.sort(key=lambda b: (b.file, b.line, SEVERITY_RANK.get(b.severity, 9)))
     meta = {
         "time": datetime.now().isoformat(timespec="seconds"),
@@ -152,11 +171,12 @@ def run_checks(root, only=None):
         "words": sum(words.values()),
         "words_per_file": words,
         "formulas_per_file": formula_counts,
-        "selection": only or "",
-        "sentences": len(project.sentences),
+        "selection": " ".join(x for x in (only or "", f"seit {since}" if since else "") if x),
+        "sentences": sentence_count if since else len(project.sentences),
         "bib": bib_stats,
         "lists": list_status,
         "git": git_status,
+        "log": log_status,
         "outline": [{"level": h.level, "title": h.title, "file": project.rel(h.line.file), "line": h.line.no,
                         "sentences": h.sentences} for h in project.headings],
     }
@@ -181,6 +201,18 @@ def environment_lines(meta):
         out.append("Verzeichnisse: " + ", ".join(
             f"{k} {'ja' if s['present'] else ('fehlt' if s['needed'] else 'nicht nötig')}" for k, s in v.items())
             + f" (Grundlage: {next(iter(v.values()))['basis']})")
+    lg = meta.get("log", {})
+    if lg.get("log"):
+        segments = [f"{lg['log']} vom {lg['time'].replace('T', ' ')}"]
+        if lg.get("stale"):
+            segments.append("älter als der Quelltext, vor der Abgabe neu übersetzen")
+        if lg.get("rerun"):
+            segments.append("LaTeX verlangt einen weiteren Lauf")
+        if lg.get("biber_warnings"):
+            segments.append(f"biber-Warnungen: {lg['biber_warnings']}")
+        out.append("LaTeX-Log: " + ", ".join(segments))
+    else:
+        out.append("LaTeX-Log: keiner gefunden, Build-Prüfung übersprungen")
     g = meta.get("git", {})
     if g.get("checked") is False:
         out.append("Git: Prüfung abgeschaltet")
@@ -201,7 +233,7 @@ def environment_lines(meta):
 
 
 def cmd_check(a):
-    cfg, project, findings, meta = run_checks(a.root, a.only)
+    cfg, project, findings, meta = run_checks(a.root, a.only, a.since)
     d = run_dir(a.root)
     (d / "linter.json").write_text(json.dumps({"meta": meta, "findings": [b.as_dict() for b in findings]}, ensure_ascii=False, indent=1), encoding="utf-8")
     print_summary(findings, meta)
@@ -209,12 +241,24 @@ def cmd_check(a):
 
 
 def cmd_clean(a):
-    d = run_dir(a.root) / "agents"
+    d = run_dir(a.root)
     n = 0
-    for f in d.glob("*.json"):
+    for f in [*(d / "agents").glob("*.json"), *(d / "defense").glob("*.json")]:
         f.unlink()
         n += 1
     print(f"{n} alte Agentendateien entfernt.")
+
+
+def cmd_defense(a):
+    import defense
+    questions = defense.load(run_dir(a.root))
+    if not questions:
+        raise SystemExit(f"Keine Fragen gefunden. Zuerst den Examiner-Agenten laufen lassen, Ausgabe nach {OUT_DIR}/run/defense/<name>.json.")
+    cfg = configuration(a.root)
+    out = Path(a.root) / OUT_DIR / "defense.html"
+    out.write_text(defense.render(questions, cfg["project"].get("title", "")), encoding="utf-8")
+    print(defense.summary(questions))
+    print(f"\nKolloquium: {out}")
 
 
 def cmd_context(a):
@@ -341,13 +385,15 @@ def main():
     help_texts = {"init": "write thesis-editor.toml with detected settings", "check": "run the deterministic checks",
              "context": "outline, word counts, markers and project rules for reviewer agents",
              "report": "merge findings into the HTML report and history", "annotate": "build the annotated PDF",
-             "clean": "remove findings of earlier reviewer runs", "rules": "regenerate references/rules.md"}
+             "defense": "render the examiner's questions into a practice page for the oral defense",
+             "clean": "remove findings and questions of earlier reviewer runs", "rules": "regenerate references/rules.md"}
     for name, h in help_texts.items():
         p = sub.add_parser(name, help=h)
         p.add_argument("--root", default=".", help="project root (default: current directory)")
         if name == "init":
             p.add_argument("-f", "--force", action="store_true", help="overwrite an existing config")
         if name == "check":
+            p.add_argument("-s", "--since", metavar="REV", help="only paragraphs changed since a Git revision, e.g. HEAD~1 or main")
             p.add_argument("-o", "--only", help="regex on file paths, included files count too, e.g. 03_methodik")
         if name == "report":
             p.add_argument("--no-history", action="store_true", help="do not add a history entry")
@@ -355,7 +401,7 @@ def main():
             p.add_argument("--no-build", action="store_true", help="prepare the annotated copy without compiling")
     a = ap.parse_args()
     {"init": cmd_init, "check": cmd_check, "context": cmd_context, "report": cmd_report,
-     "annotate": cmd_annotate, "rules": cmd_rules, "clean": cmd_clean}[a.cmd](a)
+     "annotate": cmd_annotate, "defense": cmd_defense, "rules": cmd_rules, "clean": cmd_clean}[a.cmd](a)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,44 @@
+This is LuaHBTeX, Version 1.18.0 (TeX Live 2024)  (format=lualatex 2024.6.1)
+ restricted system commands enabled.
+**Main.tex
+(./Main.tex
+LaTeX2e <2024-06-01>
+(./Glossary.tex) (./Chapters/errors.tex
+Chapter 1.
+
+LaTeX Warning: Reference `sec:fehlt' on page 1 undefined on input line 7.
+
+Overfull \hbox (0.8pt too wide) in paragraph at lines 4--4
+[]\TU/lmr/m/n/10.95 Typografie
+ []
+
+! Undefined control sequence.
+l.24 \label{sec:sprache}
+                          
+The control sequence at the end of the top line
+of your error message was never \def'ed.
+
+
+LaTeX Warning: Citation `peters2024' on page 2 undefined on input line 26.
+
+Overfull \hbox (14.2pt too wide) in paragraph at lines 40--40
+[]\TU/lmr/m/n/10.95 Dieser Abschnitt
+ []
+
+ [2
+
+]
+Overfull \hbox (480.0pt too wide) detected at line 18
+[]
+ []
+
+
+LaTeX Warning: Reference `fig:gibtesnicht' on page 3 undefined on input line 76
+.
+
+) (./Chapters/clean.tex [3]) [4] (./Main.aux)
+
+LaTeX Warning: There were undefined references.
+
+ )
+Output written on Main.pdf (4 pages, 51234 bytes).

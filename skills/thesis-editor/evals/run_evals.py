@@ -44,7 +44,7 @@ def main():
         per_rule[r][1] += 1
     for _, _, r in fp:
         per_rule[r][2] += 1
-    mech = [r for r, m in RULES.items() if m["check"] in {"linter", "bib"}]
+    mech = [r for r, m in RULES.items() if m["check"] in {"linter", "bib", "log"}]
     untested = [r for r in mech if r not in {e[2] for e in exp}]
     print(f"{'Regel':<26} Treffer  verfehlt  Fehlalarm")
     for r in sorted(per_rule):

@@ -26,7 +26,7 @@
 
     <g font-size="15" font-weight="600">
       <rect x="82" y="282" width="150" height="34" rx="17" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.15"/>
-      <text x="157" y="304" fill="#e2e8f0" text-anchor="middle">79 Regeln</text>
+      <text x="157" y="304" fill="#e2e8f0" text-anchor="middle">84 Regeln</text>
       <rect x="244" y="282" width="190" height="34" rx="17" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.15"/>
       <text x="339" y="304" fill="#e2e8f0" text-anchor="middle">5 Gutachter-Agenten</text>
       <rect x="446" y="282" width="196" height="34" rx="17" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.15"/>

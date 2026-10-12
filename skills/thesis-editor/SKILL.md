@@ -5,11 +5,13 @@ description: >-
   bachelor and master theses, seminar papers, papers. Deterministically checks typography, language, sentence structure, terminology,
   citations, bibliography, cross-references, lists of figures/tables/abbreviations, outline and whether the work is safely versioned in Git.
   Reviewer agents in fixed roles check content, methodology, formulas, coherence and whether sources support the claims.
-  Produces an HTML report with history and a color-annotated PDF. Missing sources and open points are reported separately.
+  Reads the LaTeX and biber logs of the last build. Produces an HTML report with history, a color-annotated PDF and a question catalogue
+  for the oral defense. Missing sources and open points are reported separately.
   Use this skill whenever a thesis, chapter or section written in LaTeX should be checked, proofread, edited or reviewed, or before submission,
-  also for casual requests such as "schau mal über Kapitel 5", "ist das so abgabereif?", "such wertende Wörter",
+  or to prepare the oral defense (Kolloquium, Verteidigung), also for casual requests such as "schau mal über Kapitel 5", "was habe ich seit gestern geändert?",
+  "was fragen die mich im Kolloquium?", "ist das so abgabereif?", "such wertende Wörter",
   "fehlen irgendwo Quellen?", "passt der rote Faden?", "proofread my thesis" or "check my chapter for style issues".
-argument-hint: "[quick | chapter <name> | full | submit]"
+argument-hint: "[quick | chapter <name> | since <rev> | full | submit | defense]"
 compatibility: LaTeX projects only. Python 3.11+ without extra packages. Optional latexmk for the annotated PDF, git and gh for the versioning check.
 license: MIT
 ---
@@ -34,7 +36,9 @@ The skill triggers on matching requests or explicitly as `/thesis-editor`. Whate
 - empty: mode `quick` on the whole work, then offer to run the reviewers
 - `quick`, `full` or `submit`: that mode on the whole work
 - `chapter <name>` or just a chapter name such as `Methodik` or `05`: mode `chapter` for the matching file
-- German words such as `schnell`, `kapitel`, `voll` or `abgabe` map to the same modes
+- `since <rev>` or requests like "was ist neu seit dem letzten Commit": mode `quick` limited to paragraphs changed since that Git revision (`HEAD` for uncommitted changes, `HEAD~1`, `main`)
+- `defense`: mode `defense`, the question catalogue for the oral defense
+- German words such as `schnell`, `kapitel`, `seit`, `voll`, `abgabe`, `kolloquium` or `verteidigung` map to the same modes
 
 No setup is required. Without `thesis-editor.toml` the skill detects main file, bibliography, glossary and marker macros itself.
 
@@ -56,6 +60,9 @@ Derive the mode from the request. If unsure, `chapter` for single chapters and `
 | `chapter` | a chapter or section is named | scripts, editor, plus methodologist or mathematician depending on the chapter |
 | `full` | whole work, "alles prüfen" | scripts, all reviewers except source checker, report, PDF |
 | `submit` | "abgabereif?", before submission | like `full`, plus source checker and submission checklist |
+| `defense` | "Kolloquium", "Verteidigung", "was werden die fragen?" | scripts, examiner, practice page `defense.html` |
+
+`quick` and `chapter` can be combined with `--since <rev>` to review only what changed. That is the right choice after an editing session: fast, and the findings concern text the person still has in mind.
 
 ## Workflow
 
@@ -77,11 +84,14 @@ Without `thesis-editor.toml` all commands use detected values. That is enough fo
 ```bash
 python3 S/scripts/cli.py check                      # whole work
 python3 S/scripts/cli.py check --only 03_methodik   # one chapter including its \input files
+python3 S/scripts/cli.py check --since HEAD         # only paragraphs changed since the last commit
 ```
 
-Results go to `.thesis-editor/run/linter.json`. The output shows findings per rule. With `--only`, findings, word count and index cover only the selected files. Files included by a matching file count automatically.
+Results go to `.thesis-editor/run/linter.json`. The output shows findings per rule. With `--only`, findings, word count and index cover only the selected files. Files included by a matching file count automatically. With `--since <rev>`, only paragraphs that changed since that Git revision count, including new untracked files. Both options can be combined.
 
-A check of the whole work adds two environment checks. Their status is printed at the end of the output, also when everything is fine:
+The check also reads the log of the last LaTeX build (`<main>.log`, or `[project] log` in the config) and the biber log (`<main>.blg`). It reports LaTeX errors (`LOG-FEHLER`), unresolved references and citations (`LOG-VERWEIS`, `LOG-ZITAT`), lines sticking into the margin by 2 pt or more (`LOG-UEBERVOLL`) and biber warnings (`LOG-BIBER`), each at the source line. Template pages and the output routine are filtered out. If the log is older than the source, the status line says so, then suggest rebuilding before trusting these findings.
+
+A check of the whole work (without `--only` or `--since`) adds two environment checks. Their status is printed at the end of the output, also when everything is fine:
 
 - **Lists** (`STR-VERZEICHNIS`): if the work contains figures, tables or abbreviations, the matching list must exist. The evidence is the recorder file `.fls` of the last LaTeX run, because templates often create these lists in class files behind options. Without a build the source including templates is searched.
 - **Versioning** (`ABG-VERSIONIERUNG`, `ABG-GIT-STAND`): recommends keeping the work in a private Git repository. If one exists, the skill checks for a remote, whether it is private (via `gh` if installed), how many files are uncommitted and how many commits are unpushed. `.thesis-editor/` is excluded. The skill never commits or pushes. `[git] enabled = false` in `thesis-editor.toml` turns the check off.
@@ -140,14 +150,21 @@ The build takes a few minutes for a master thesis, so run it in the background. 
 
 If a finding sits inside a table, figure or formula, the mark goes directly before the object so the build does not break.
 
-### 6. Answer
+### 6. Oral defense (mode `defense`)
+
+1. Run `python3 S/scripts/cli.py check` and `context` so the examiner sees open findings and the outline. Existing agent findings from earlier runs help, do not clean them first.
+2. Start the examiner with `agents/examiner.md` and `agents/_shared.md`. For works over about 12,000 words start two instances in parallel: one for introduction, related work, method, results, discussion and conclusion (`.thesis-editor/run/defense/method.json`), one for chapters with formulas, statistics and implementation (`.thesis-editor/run/defense/math.json`). Otherwise one instance writes `.thesis-editor/run/defense/examiner.json`.
+3. Run `python3 S/scripts/cli.py defense`. It writes `.thesis-editor/defense.html`: a practice page with filters, random order and hidden answers, and a section *Offene Flanken* listing questions the thesis does not answer well yet.
+4. Answer in German with the number of questions, the open flanks as a short list with location, and the link to the page. Offer to close a gap in the thesis, without changing anything unasked.
+
+### 7. Answer
 
 Keep the chat answer short and prioritized, in German:
 
 1. Index and counts from the summary. On follow-up runs also what was fixed and what is new. In mode `quick` say that content, method and source fidelity were not reviewed.
 2. The five to ten most important findings, errors and content warnings first, each with location as link `[file:line](path:line)`.
 3. Open markers as a count, with a pointer to the report.
-4. Status of lists and Git in one sentence. If there is no private repository or there are unsaved changes, phrase it as a recommendation, not as a text defect.
+4. Status of lists, LaTeX log and Git in one sentence each, only where something needs attention. If there is no private repository or there are unsaved changes, phrase it as a recommendation, not as a text defect.
 5. Link to the report, and to the PDF only if it was built in this run. Mark an older `annotated.pdf` explicitly as outdated.
 6. An offer to fix specific findings. No change without consent.
 

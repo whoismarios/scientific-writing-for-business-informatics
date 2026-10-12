@@ -10,7 +10,7 @@
   <img alt="Codex Skill" src="https://img.shields.io/badge/Codex-skill-412991?style=flat-square&logo=openai&logoColor=white">
   <img alt="npx skills" src="https://img.shields.io/badge/npx-skills_add-CB3837?style=flat-square&logo=npm&logoColor=white">
   <br>
-  <img alt="79 Regeln" src="https://img.shields.io/badge/Regeln-79-7a3fc4?style=flat-square">
+  <img alt="84 Regeln" src="https://img.shields.io/badge/Regeln-84-7a3fc4?style=flat-square">
   <img alt="Trefferquote 100 %" src="https://img.shields.io/badge/Trefferquote-100%25-22c55e?style=flat-square">
   <img alt="Fehlalarme 0" src="https://img.shields.io/badge/Fehlalarme-0-22c55e?style=flat-square">
   <img alt="Keine Abhängigkeiten" src="https://img.shields.io/badge/dependencies-none-64748b?style=flat-square">
@@ -123,11 +123,13 @@ Eine Einrichtung ist nicht nötig. Der Skill findet Hauptdatei, Bibliografie, Gl
 | Befehl | Umfang | Dauer |
 |---|---|---|
 | `/thesis-editor` | mechanische Prüfung der ganzen Arbeit | Sekunden |
+| `/thesis-editor since HEAD` | nur Absätze, die seit dem letzten Commit geändert wurden | Sekunden |
 | `/thesis-editor chapter Methodik` | ein Kapitel, mit Editor und Methodologist oder Mathematician | wenige Minuten |
 | `/thesis-editor full` | ganze Arbeit, alle Gutachter, markierte PDF | mehrere Minuten |
 | `/thesis-editor submit` | wie `full`, dazu Quellenprüfung und Abgabe-Checkliste | mehrere Minuten |
+| `/thesis-editor defense` | Fragenkatalog für das Kolloquium mit Antworten und offenen Flanken | einige Minuten |
 
-Der Skill reagiert auch ohne Befehl auf Bitten wie *„Schau mal über Kapitel 5“*, *„Fehlen irgendwo Quellen?“* oder *„Ist die Arbeit abgabereif?“*.
+Der Skill reagiert auch ohne Befehl auf Bitten wie *„Schau mal über Kapitel 5“*, *„Was habe ich seit gestern geändert?“*, *„Fehlen irgendwo Quellen?“*, *„Ist die Arbeit abgabereif?“* oder *„Was fragen die mich im Kolloquium?“*.
 
 ## Was geprüft wird
 
@@ -144,6 +146,7 @@ Der Skill reagiert auch ohne Befehl auf Bitten wie *„Schau mal über Kapitel 5
 | 🔬 Inhalt und Methodik | 8 | Belegpflicht, Forschungsfragen beantwortet, Setzungen begründet, Limitationen |
 | ➗ Formeln | 3 | Variablen erklärt, Rechenbeispiel, einheitliche Notation |
 | 🖼️ Abbildungen | 1 | Gestaltung und Lesbarkeit |
+| 🛠️ Build-Log | 5 | LaTeX-Fehler, Verweise und Zitate als ??, Zeilen im Rand, biber-Warnungen, jeweils an der Quelltextzeile |
 | 💾 Abgabe | 2 | privates Git-Repository, alles committet und gepusht |
 | 📌 Marker | 2 | offene Punkte und fehlende Quellen der schreibenden Person |
 
@@ -158,6 +161,7 @@ Alle Regeln mit Begründung und Beispielen stehen in [rules.md](skills/thesis-ed
 | ➗ **Mathematician** | Zweitgutachten | Verständlichkeit und Verteidigbarkeit jeder Formel |
 | 🧵 **Coherence** | Erstlesende | Zusammenhang, Doppelungen, Zahlenkonsistenz, Detailtiefe |
 | 🔎 **Source checker** | Peer Review | ob die zitierte Quelle die Aussage trägt, Belegpflicht |
+| 🎤 **Examiner** | Prüfungskommission | wahrscheinliche Fragen im Kolloquium, Stichpunktantworten aus der Arbeit, Lücken |
 
 ## Ergebnisse
 
@@ -167,6 +171,7 @@ Alles landet im Ordner `.thesis-editor/` der Arbeit. Er gehört in die `.gitigno
 |---|---|
 | `report.html` | alle Befunde mit Filtern, Suche, Lektoratsindex und Verlauf über alle Läufe |
 | `annotated.pdf` | Kopie der Arbeit mit farbigen Befundnummern, Legende und verlinktem Befundkapitel |
+| `defense.html` | Übungsseite fürs Kolloquium: Fragen nach Kategorie und Schwierigkeit, Antworten zum Aufklappen, zufällige Reihenfolge, offene Flanken |
 
 Der **Lektoratsindex** zählt Fehler fünffach, Warnungen doppelt und Hinweise halb, je 1.000 Wörter. Niedriger ist besser. Über den Verlauf wird sichtbar, was behoben wurde und was neu ist.
 
@@ -220,15 +225,17 @@ python3 ~/.claude/skills/thesis-editor/scripts/cli.py check
 | Befehl | Wirkung |
 |---|---|
 | `init` | legt `thesis-editor.toml` mit erkannten Werten an |
-| `check` | mechanische Prüfung der ganzen Arbeit oder ausgewählter Dateien |
+| `check` | mechanische Prüfung und Auswertung des letzten LaTeX-Logs |
 | `context` | Gliederung, Wortzahlen, Formeln, Marker und Projektregeln für die Gutachter |
 | `report` | `report.html` und Verlaufseintrag |
 | `annotate` | `annotated.pdf` |
-| `clean` | entfernt Befunde älterer Gutachterläufe |
+| `defense` | erzeugt `defense.html` aus den Fragen des Examiners |
+| `clean` | entfernt Befunde und Fragen älterer Agentenläufe |
 | `rules` | erzeugt `references/rules.md` aus `rules.toml` |
 
 | Option | Kurzform | Befehl | Wirkung | Beispiel |
 |---|---|---|---|---|
+| `--since <rev>` | `-s` | `check` | nur Absätze, die seit dieser Git-Revision geändert wurden, auch neue Dateien | `check --since HEAD~1` |
 | `--only <regex>` | `-o` | `check` | nur Dateien, deren Pfad passt, samt eingebundener Dateien | `check --only 03_methodik` |
 | `--force` | `-f` | `init` | vorhandene Konfiguration überschreiben | `init --force` |
 | `--no-history` | | `report` | Bericht ohne Verlaufseintrag, etwa für Zwischenstände | `report --no-history` |
@@ -256,13 +263,13 @@ Skill, Befehle, Optionen, Konfigurationsschlüssel und Dateinamen sind englisch.
 
 ## English
 
-`thesis-editor` is an agent skill for Claude Code, Codex and other agents that reviews German academic writing in LaTeX, tailored to business informatics (Wirtschaftsinformatik). A deterministic linter checks typography, language, citations, bibliography, cross-references, lists of figures and tables, and whether the work is safely versioned in Git. Five reviewer agents check content, method, formulas, coherence and whether sources support the claims. The result is an HTML report with history and an annotated PDF. The source is never modified.
+`thesis-editor` is an agent skill for Claude Code, Codex and other agents that reviews German academic writing in LaTeX, tailored to business informatics (Wirtschaftsinformatik). A deterministic linter checks typography, language, citations, bibliography, cross-references, lists of figures and tables, the LaTeX build log, and whether the work is safely versioned in Git. Five reviewer agents check content, method, formulas, coherence and whether sources support the claims. The result is an HTML report with history and an annotated PDF. The source is never modified.
 
 ```bash
 npx skills add whoismarios/scientific-writing-for-german-business-informatics --global
 ```
 
-Run `/thesis-editor` inside your thesis folder, optionally followed by `chapter <name>`, `full` or `submit`. Commands, flags and config keys are English. Rules, findings and reports are German.
+Run `/thesis-editor` inside your thesis folder, optionally followed by `chapter <name>`, `since <rev>`, `full`, `submit` or `defense` (question catalogue for the oral defense). The check also reads the LaTeX and biber logs of the last build. Commands, flags and config keys are English. Rules, findings and reports are German.
 
 ## Lizenz
 
