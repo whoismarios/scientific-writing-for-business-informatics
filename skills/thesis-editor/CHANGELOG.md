@@ -2,9 +2,9 @@
 
 Alle Änderungen an `thesis-editor`. Die Versionen folgen [Semantic Versioning](https://semver.org/lang/de/): Eine neue Hauptversion ändert Konfiguration oder Verlauf so, dass etwas angepasst werden muss. Neue Regeln und Funktionen erhöhen die mittlere Stelle, Korrekturen die letzte. Neue oder geänderte Regeln können den Lektoratsindex verschieben, das steht dann beim Eintrag.
 
-## Unreleased
+## 1.0.1 (2026-10-13)
 
-- Neue Adresse des Repositorys: github.com/whoismarios/scientific-writing-for-business-informatics. Die alte Adresse leitet weiter
+- Neue Adresse des Repositorys in README und Update-Prüfung: github.com/whoismarios/scientific-writing-for-business-informatics
 
 ## 1.0.0 (2026-10-13)
 

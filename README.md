@@ -11,8 +11,8 @@
   <img alt="Codex Skill" src="https://img.shields.io/badge/Codex-skill-412991?style=flat-square&logo=openai&logoColor=white">
   <img alt="npx skills" src="https://img.shields.io/badge/npx-skills_add-CB3837?style=flat-square&logo=npm&logoColor=white">
   <br>
-  <a href="skills/thesis-editor/CHANGELOG.md"><img alt="thesis-editor 1.0.0, 84 Regeln" src="https://img.shields.io/badge/thesis--editor-1.0.0_%C2%B7_84_Regeln-7a3fc4?style=flat-square"></a>
-  <a href="skills/code-docs/CHANGELOG.md"><img alt="code-docs 0.1.0, 11 Regeln" src="https://img.shields.io/badge/code--docs-0.1.0_%C2%B7_11_Regeln-6366f1?style=flat-square"></a>
+  <a href="skills/thesis-editor/CHANGELOG.md"><img alt="thesis-editor 1.0.1, 84 Regeln" src="https://img.shields.io/badge/thesis--editor-1.0.1_%C2%B7_84_Regeln-7a3fc4?style=flat-square"></a>
+  <a href="skills/code-docs/CHANGELOG.md"><img alt="code-docs 0.1.1, 11 Regeln" src="https://img.shields.io/badge/code--docs-0.1.1_%C2%B7_11_Regeln-6366f1?style=flat-square"></a>
   <img alt="Keine Abhängigkeiten" src="https://img.shields.io/badge/dependencies-none-64748b?style=flat-square">
 </p>
 
@@ -54,8 +54,8 @@ Das Repository enthält zwei Skills, die sich einzeln installieren lassen:
 
 | Skill | Für | Aufruf | Ändert Dateien | Version |
 |---|---|---|---|---|
-| [thesis-editor](#schnellstart) | Lektorat und Gutachten der schriftlichen Arbeit in LaTeX | `/thesis-editor` oder Bitten wie *„Schau mal über Kapitel 5“* | nein, schreibt nur Berichte nach `.thesis-editor/` | [1.0.0](skills/thesis-editor/CHANGELOG.md) |
-| [code-docs](#code-docs) | Dokumentation des praktischen Teils: Docstrings, `ARCHITECTURE.md`, README | nur ausdrücklich mit `/code-docs` | ja, aber nur Docstrings, Kommentare und Dokumentationsdateien | [0.1.0](skills/code-docs/CHANGELOG.md) |
+| [thesis-editor](#schnellstart) | Lektorat und Gutachten der schriftlichen Arbeit in LaTeX | `/thesis-editor` oder Bitten wie *„Schau mal über Kapitel 5“* | nein, schreibt nur Berichte nach `.thesis-editor/` | [1.0.1](skills/thesis-editor/CHANGELOG.md) |
+| [code-docs](#code-docs) | Dokumentation des praktischen Teils: Docstrings, `ARCHITECTURE.md`, README | nur ausdrücklich mit `/code-docs` | ja, aber nur Docstrings, Kommentare und Dokumentationsdateien | [0.1.1](skills/code-docs/CHANGELOG.md) |
 
 ## Installation
 
