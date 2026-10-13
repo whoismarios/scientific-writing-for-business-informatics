@@ -650,7 +650,7 @@ severity = "Warnung"
 color = "evidence"
 check = "linter"
 origin = "FB, WI"
-why = "Jede Abbildung nennt ihre Herkunft. Eigene Abbildungen tragen Eigene Darstellung, angepasste Vorlagen Eigene Darstellung nach \\textcite{...}, übernommene Abbildungen Quelle: \\textcite{...}."
+why = "Jede Abbildung nennt ihre Herkunft. Eigene Abbildungen tragen Eigene Darstellung (oder Eigene Berechnung, Eigene Aufnahme, Eigener Screenshot), angepasste Vorlagen Eigene Darstellung nach \\textcite{...}, übernommene Abbildungen Quelle: \\textcite{...}."
 wrong = "\\caption{Architektur des Prototyps}"
 right = "\\caption{Architektur des Prototyps. Eigene Darstellung}"
 

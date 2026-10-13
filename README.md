@@ -11,8 +11,6 @@
   <img alt="npx skills" src="https://img.shields.io/badge/npx-skills_add-CB3837?style=flat-square&logo=npm&logoColor=white">
   <br>
   <img alt="84 Regeln" src="https://img.shields.io/badge/Regeln-84-7a3fc4?style=flat-square">
-  <img alt="Trefferquote 100 %" src="https://img.shields.io/badge/Trefferquote-100%25-22c55e?style=flat-square">
-  <img alt="Fehlalarme 0" src="https://img.shields.io/badge/Fehlalarme-0-22c55e?style=flat-square">
   <img alt="Keine Abhängigkeiten" src="https://img.shields.io/badge/dependencies-none-64748b?style=flat-square">
 </p>
 
@@ -169,9 +167,9 @@ Alles landet im Ordner `.thesis-editor/` der Arbeit. Er gehört in die `.gitigno
 
 | Datei | Inhalt |
 |---|---|
-| `report.html` | alle Befunde mit Filtern, Suche, Lektoratsindex und Verlauf über alle Läufe |
+| `report.html` | alle Befunde mit Filtern nach Schwere, Art und Quelle, Suche, Anzahl angezeigter Befunde, Lektoratsindex und Verlauf über alle Läufe, hell und dunkel |
 | `annotated.pdf` | Kopie der Arbeit mit farbigen Befundnummern, Legende und verlinktem Befundkapitel |
-| `defense.html` | Übungsseite fürs Kolloquium: Fragen nach Kategorie und Schwierigkeit, Antworten zum Aufklappen, zufällige Reihenfolge, offene Flanken |
+| `defense.html` | Übungsseite fürs Kolloquium: offene Flanken mit kritischen zuerst, Fragen mit Filtern nach Kategorie und Schwierigkeit, Antworten zum Aufklappen, zufällige Reihenfolge, hell und dunkel, druckbar |
 
 Der **Lektoratsindex** zählt Fehler fünffach, Warnungen doppelt und Hinweise halb, je 1.000 Wörter. Niedriger ist besser. Über den Verlauf wird sichtbar, was behoben wurde und was neu ist.
 
@@ -227,7 +225,7 @@ python3 ~/.claude/skills/thesis-editor/scripts/cli.py check
 | `init` | legt `thesis-editor.toml` mit erkannten Werten an |
 | `check` | mechanische Prüfung und Auswertung des letzten LaTeX-Logs |
 | `context` | Gliederung, Wortzahlen, Formeln, Marker und Projektregeln für die Gutachter |
-| `report` | `report.html` und Verlaufseintrag |
+| `report` | `report.html` und ein Verlaufseintrag je Prüflauf |
 | `annotate` | `annotated.pdf` |
 | `defense` | erzeugt `defense.html` aus den Fragen des Examiners |
 | `clean` | entfernt Befunde und Fragen älterer Agentenläufe |
@@ -257,7 +255,7 @@ python3 skills/thesis-editor/scripts/cli.py rules
 python3 skills/thesis-editor/evals/run_evals.py
 ```
 
-Die Messung muss bei 100 % Trefferquote und 0 Fehlalarmen bleiben.
+Eine Änderung ist fertig, wenn alle Testfälle weiter durchlaufen. Das Skript zeigt je Regel erwartete, fehlende und unerwartete Treffer.
 
 Skill, Befehle, Optionen, Konfigurationsschlüssel und Dateinamen sind englisch. Regeln, Meldungen und Berichte sind deutsch, weil sie deutsche Texte prüfen und von der schreibenden Person gelesen werden.
 

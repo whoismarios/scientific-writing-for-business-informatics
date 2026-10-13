@@ -352,7 +352,7 @@ class Linter:
             nach = re.search(r"Eigene Darstellung\s+(?:nach|in Anlehnung)|in Anlehnung an|\bnach\s*$", text, re.I)
             if nach and not has_cite:
                 self.emit("FMT-ABB-QUELLE", f.begin, "Angepasste Vorlage ohne Zitat der Vorlage", f.caption[:120], "Eigene Darstellung nach \\textcite{key}")
-            elif f.kind == "figure" and not re.search(r"Eigene Darstellung|Quelle\s*:", text, re.I) and not has_cite:
+            elif f.kind == "figure" and not re.search(r"Eigene (?:Darstellung|Berechnung|Aufnahme|Abbildung)|Eigener Screenshot|Quelle\s*:", text, re.I) and not has_cite:
                 self.emit("FMT-ABB-QUELLE", f.begin, "Abbildung ohne Herkunftsangabe", f.caption[:120], "Eigene Darstellung, Eigene Darstellung nach \\textcite{key} oder Quelle: \\textcite{key}")
 
     def refs(self):

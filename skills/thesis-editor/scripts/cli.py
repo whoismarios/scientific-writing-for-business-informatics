@@ -320,15 +320,16 @@ def cmd_report(a):
     root = Path(a.root)
     hist_dir = root / OUT_DIR / "history"
     hist_dir.mkdir(parents=True, exist_ok=True)
-    previous = sorted(hist_dir.glob("*.json"))
-    prev = report.load_history(previous[-1].read_text(encoding="utf-8")) if previous else None
-    entry = report.history_entry(meta, findings, agents)
-    stamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-    if not a.no_history:
-        (hist_dir / f"{stamp}.json").write_text(json.dumps(entry, ensure_ascii=False, indent=1), encoding="utf-8")
     history = [report.load_history(p.read_text(encoding="utf-8")) for p in sorted(hist_dir.glob("*.json"))]
-    if a.no_history:
-        history.append(entry)
+    rerun = bool(history) and history[-1]["time"] == meta["time"]
+    if rerun:
+        history.pop()
+    prev = history[-1] if history else None
+    entry = report.history_entry(meta, findings, agents)
+    if not a.no_history and not rerun:
+        stamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+        (hist_dir / f"{stamp}.json").write_text(json.dumps(entry, ensure_ascii=False, indent=1), encoding="utf-8")
+    history.append(entry)
     out = root / OUT_DIR / "report.html"
     out.write_text(report.render_html(cfg, meta, findings, agents, history, prev), encoding="utf-8")
     print(report.render_summary(meta, findings, agents, entry, prev))

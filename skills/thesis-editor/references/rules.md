@@ -673,7 +673,7 @@ Ein Verweis auf ein unbekanntes Label erscheint im PDF als ??.
 
 Warnung, Prüfung: linter, Herkunft: FB, WI
 
-Jede Abbildung nennt ihre Herkunft. Eigene Abbildungen tragen Eigene Darstellung, angepasste Vorlagen Eigene Darstellung nach \textcite{...}, übernommene Abbildungen Quelle: \textcite{...}.
+Jede Abbildung nennt ihre Herkunft. Eigene Abbildungen tragen Eigene Darstellung (oder Eigene Berechnung, Eigene Aufnahme, Eigener Screenshot), angepasste Vorlagen Eigene Darstellung nach \textcite{...}, übernommene Abbildungen Quelle: \textcite{...}.
 
 - Falsch: \caption{Architektur des Prototyps}
 - Richtig: \caption{Architektur des Prototyps. Eigene Darstellung}

@@ -130,7 +130,7 @@ Before every run with reviewers, run `python3 S/scripts/cli.py clean`. It remove
 python3 S/scripts/cli.py report
 ```
 
-Merges linter and agent findings, writes `.thesis-editor/report.html`, adds an entry to `.thesis-editor/history/` and prints a summary with the editing index (Lektoratsindex). The index weighs errors five times, warnings twice and hints half, per 1,000 words. The history shows how the work improves. `--no-history` writes a report without history entry, for intermediate states.
+Merges linter and agent findings, writes `.thesis-editor/report.html`, adds one entry per check run to `.thesis-editor/history/` (running `report` again for the same check replaces nothing and compares with the run before) and prints a summary with the editing index (Lektoratsindex). The index weighs errors five times, warnings twice and hints half, per 1,000 words. The history shows how the work improves. `--no-history` writes a report without history entry, for intermediate states.
 
 ### 5. Annotated PDF (modes `full`, `submit` or on request)
 
