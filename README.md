@@ -116,7 +116,7 @@ Im Ordner der Arbeit den Agenten starten und eingeben:
 /thesis-editor
 ```
 
-Eine Einrichtung ist nicht nötig. Der Skill findet Hauptdatei, Bibliografie, Glossar und Marker-Makros selbst. Hinter dem Befehl lässt sich der Umfang angeben:
+Eine Einrichtung ist nicht nötig. Der Skill findet Hauptdatei, Bibliografie, Glossar und vorhandene [Marker-Makros](#marker) selbst. Hinter dem Befehl lässt sich der Umfang angeben:
 
 | Befehl | Umfang | Dauer |
 |---|---|---|
@@ -202,6 +202,23 @@ variants = [["Nutzer|Nutzers|Nutzern", "Anwender|Anwendern"]]
 [research_questions]
 FF1 = "Wie wirkt sich X auf Y aus?"
 ```
+
+### Marker
+
+Was beim Schreiben noch fehlt, wird direkt im Text markiert, statt es im Kopf zu behalten. Der Skill sammelt diese Marker als offene Punkte im Bericht, zählt sie aber nicht als Befund. Vor der Abgabe sollte keiner mehr übrig sein. Die beiden Makros gehören in die Präambel:
+
+```latex
+\usepackage{xcolor}
+\newcommand{\quellefehlt}[1]{\textcolor{red}{[Quelle fehlt: #1]}}
+\newcommand{\offen}[1]{\textcolor{orange!85!black}{[Offen: #1]}}
+```
+
+```latex
+Die Akzeptanz steigt mit dem wahrgenommenen Nutzen \quellefehlt{Davis 1989}.
+\offen{Stichprobengröße nach der Erhebung eintragen.}
+```
+
+Im PDF erscheinen beide farbig, sodass nichts übersehen wird. Wer andere Makronamen verwendet, trägt sie in der Konfiguration unter `[markers]` ein. Die Prüfung meldet in ihrer Zusammenfassung, ob die erwarteten Makros definiert sind. Der Skill schlägt `\quellefehlt` nur vor, wenn das Makro existiert, sonst würde LaTeX abbrechen.
 
 Alle Optionen mit Kommentaren stehen in [thesis-editor.example.toml](skills/thesis-editor/thesis-editor.example.toml). Ein Befund, der bewusst so bleiben soll, wird im Quelltext ausgenommen:
 

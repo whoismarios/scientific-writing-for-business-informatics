@@ -177,10 +177,20 @@ def run_checks(root, only=None, since=None):
         "lists": list_status,
         "git": git_status,
         "log": log_status,
+        "markers": marker_status(project, cfg),
         "outline": [{"level": h.level, "title": h.title, "file": project.rel(h.line.file), "line": h.line.no,
                         "sentences": h.sentences} for h in project.headings],
     }
     return cfg, project, findings, meta
+
+
+def marker_status(project, cfg):
+    """Whether each configured marker macro is defined somewhere in the project."""
+    sources = set(project.files) | {p for p in project.main.parent.rglob("*") if p.suffix in {".tex", ".sty"}}
+    text = "\n".join(p.read_text(encoding="utf-8", errors="replace") for p in sources)
+    names = [n for group in cfg["markers"].values() for n in group]
+    return {n: bool(re.search(rf"\\(?:(?:re|provide)?newcommand\*?\{{?|(?:New|Renew|Provide|Declare)DocumentCommand\{{?|def)\\{n}(?![A-Za-z])", text))
+            for n in names}
 
 
 def print_summary(findings, meta):
@@ -213,6 +223,12 @@ def environment_lines(meta):
         out.append("LaTeX-Log: " + ", ".join(segments))
     else:
         out.append("LaTeX-Log: keiner gefunden, Build-Prüfung übersprungen")
+    mk = meta.get("markers", {})
+    if mk:
+        missing = [n for n, ok in mk.items() if not ok]
+        defined = [n for n, ok in mk.items() if ok]
+        out.append("Marker: " + (", ".join(f"\\{n}" for n in defined) + " definiert" if defined else "keine definiert")
+                   + (f", nicht definiert: {', '.join(f'\\{n}' for n in missing)} (Vorlage für die Präambel in der README unter Marker)" if missing else ""))
     g = meta.get("git", {})
     if g.get("checked") is False:
         out.append("Git: Prüfung abgeschaltet")

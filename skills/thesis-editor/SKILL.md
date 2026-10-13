@@ -40,7 +40,15 @@ The skill triggers on matching requests or explicitly as `/thesis-editor`. Whate
 - `defense`: mode `defense`, the question catalogue for the oral defense
 - German words such as `schnell`, `kapitel`, `seit`, `voll`, `abgabe`, `kolloquium` or `verteidigung` map to the same modes
 
-No setup is required. Without `thesis-editor.toml` the skill detects main file, bibliography, glossary and marker macros itself.
+No setup is required. Without `thesis-editor.toml` the skill detects main file, bibliography, glossary and marker macros itself. The check summary reports in its `Marker:` line whether the marker macros are defined. If they are not, tell the writer once and offer the preamble snippet from the README section Marker:
+
+```latex
+\usepackage{xcolor}
+\newcommand{\quellefehlt}[1]{\textcolor{red}{[Quelle fehlt: #1]}}
+\newcommand{\offen}[1]{\textcolor{orange!85!black}{[Offen: #1]}}
+```
+
+Add it to the preamble only after the writer agrees.
 
 ## Principles
 
@@ -48,7 +56,7 @@ No setup is required. Without `thesis-editor.toml` the skill detects main file, 
 - **Every finding is evidenced** with file, line and a verbatim excerpt. A finding without location is an opinion and does not belong in the report.
 - **Few, solid findings beat many.** A review with 300 nitpicks does not get read. Reviewers prioritize and cap themselves.
 - **Suggestions follow the rule set themselves.** No semicolon, no dash as parenthesis, no first person in a suggestion.
-- **Never invent sources.** Where evidence is missing, suggest `\quellefehlt{...}` (or the configured marker) with a hint what to search for.
+- **Never invent sources.** Where evidence is missing, suggest `\quellefehlt{...}` (or the configured marker) with a hint what to search for. If the macro is not defined, LaTeX would stop with an error, so suggest the preamble snippet first or describe the missing source in plain words.
 
 ## Modes
 

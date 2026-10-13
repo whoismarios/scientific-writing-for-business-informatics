@@ -177,6 +177,9 @@ def command_args(s, i):
     return args, i
 
 
+MARKERS = {"quellefehlt", "offen"}
+
+
 def to_prose(code, mask_quotes):
     """Turns a source line into readable text without commands, math and references."""
     s = INLINE_MATH.sub(" [Formel] ", code)
@@ -216,7 +219,7 @@ def to_prose(code, mask_quotes):
                 if name == "item":
                     out.append(" ")
                 continue
-            if name in {"quellefehlt", "offen", "platz"}:
+            if name in MARKERS:
                 i = skip_args(s, j, limit=1)
                 continue
             k = j
@@ -246,6 +249,7 @@ class Project:
     def __init__(self, root, config):
         self.root = Path(root)
         self.config = config
+        MARKERS.update(n for group in config.get("markers", {}).values() for n in group)
         self.main = (self.root / config["project"]["main"]).resolve()
         self.src = self.main.parent
         self.files = []

@@ -18,7 +18,7 @@ CONFIG_NAMES = ("thesis-editor.toml", "thesis-lektor.toml", "lektorat.toml")
 
 DEFAULT_CONFIG = {
     "project": {"main": "src/Main.tex", "bib": [], "glossary": [], "title": ""},
-    "markers": {"missing_source": ["quellefehlt"], "open": ["offen", "platz"]},
+    "markers": {"missing_source": ["quellefehlt"], "open": ["offen"]},
     "sentences": {"max_words": 35, "max_clauses": 2},
     "structure": {"skip_sections": ["Anhang"]},
     "terms": {"forbidden": {}, "variants": [], "compounds": []},

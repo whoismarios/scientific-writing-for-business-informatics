@@ -17,7 +17,7 @@ engine = "lualatex"                   # lualatex, xelatex or pdflatex
 
 [markers]
 missing_source = ["quellefehlt"]      # macros for known missing sources, shown red
-open = ["offen", "platz"]             # macros for open points, also without argument, shown orange
+open = ["offen"]                      # macros for open points, also without argument, shown orange
 
 [sentences]
 max_words = 35
