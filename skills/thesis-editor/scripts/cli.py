@@ -15,6 +15,7 @@ import bib  # noqa: E402
 import buildlog  # noqa: E402
 import changes  # noqa: E402
 import environment  # noqa: E402
+import update  # noqa: E402
 from ruleset import OUT_DIR, RULESET, RULES, SEVERITY_RANK, SKILL_DIR, config_path, from_dict, load_config  # noqa: E402
 from linter import Linter  # noqa: E402
 from texmodel import Project  # noqa: E402
@@ -121,6 +122,10 @@ def cmd_init(a):
         "",
         "[research_questions]",
         '# FF1 = "Wortlaut der ersten Forschungsfrage"',
+        "",
+        "[update]",
+        "check = true",
+        "auto = false",
     ]
     target.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Angelegt: {target}")
@@ -229,6 +234,7 @@ def environment_lines(meta):
         defined = [n for n, ok in mk.items() if ok]
         out.append("Marker: " + (", ".join(f"\\{n}" for n in defined) + " definiert" if defined else "keine definiert")
                    + (f", nicht definiert: {', '.join(f'\\{n}' for n in missing)} (Vorlage für die Präambel in der README unter Marker)" if missing else ""))
+    out += update_lines(meta.get("update"))
     g = meta.get("git", {})
     if g.get("checked") is False:
         out.append("Git: Prüfung abgeschaltet")
@@ -248,8 +254,24 @@ def environment_lines(meta):
     return "\n".join(out)
 
 
+def update_lines(st):
+    if not st:
+        return []
+    if st["state"] == "off":
+        return [f"Update: Prüfung abgeschaltet, installiert {st['installed']}"]
+    if st["state"] == "unknown":
+        return [f"Update: installiert {st['installed']}, GitHub nicht erreichbar"]
+    if not st["available"]:
+        return [f"Update: {st['installed']} ist aktuell"]
+    head = (f"Update: {st['latest']} verfügbar, installiert {st['installed']}, "
+            f"automatisch {'an' if st['auto'] else 'aus'}"
+            + (", Installation aus Git-Checkout (git pull)" if st["install"] == "git" else ""))
+    return [head] + [f"  {v}: {item}" for v, items in st["changes"] for item in items]
+
+
 def cmd_check(a):
     cfg, project, findings, meta = run_checks(a.root, a.only, a.since)
+    meta["update"] = update.status(cfg["update"])
     d = run_dir(a.root)
     (d / "linter.json").write_text(json.dumps({"meta": meta, "findings": [b.as_dict() for b in findings]}, ensure_ascii=False, indent=1), encoding="utf-8")
     print_summary(findings, meta)

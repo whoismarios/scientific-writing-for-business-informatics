@@ -1,30 +1,36 @@
 <p align="center">
-  <img src="assets/banner.svg" alt="thesis-editor: Lektorat für wissenschaftliche Arbeiten in LaTeX" width="100%">
+  <img src="assets/banner.svg" alt="thesis-editor und code-docs: Lektorat der Arbeit in LaTeX und Dokumentation des Codes" width="100%">
 </p>
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square"></a>
   <img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%2B-3776AB?style=flat-square&logo=python&logoColor=white">
-  <img alt="LaTeX" src="https://img.shields.io/badge/LaTeX-only-008080?style=flat-square&logo=latex&logoColor=white">
+  <img alt="LaTeX für thesis-editor" src="https://img.shields.io/badge/LaTeX-thesis--editor-008080?style=flat-square&logo=latex&logoColor=white">
+  <img alt="Python, TypeScript, Java, C#, R und Go für code-docs" src="https://img.shields.io/badge/Python_%C2%B7_TS_%C2%B7_Java_%C2%B7_C%23_%C2%B7_R_%C2%B7_Go-code--docs-3178C6?style=flat-square">
   <img alt="Claude Code Skill" src="https://img.shields.io/badge/Claude_Code-skill-D97757?style=flat-square&logo=claude&logoColor=white">
   <img alt="Codex Skill" src="https://img.shields.io/badge/Codex-skill-412991?style=flat-square&logo=openai&logoColor=white">
   <img alt="npx skills" src="https://img.shields.io/badge/npx-skills_add-CB3837?style=flat-square&logo=npm&logoColor=white">
   <br>
-  <img alt="84 Regeln" src="https://img.shields.io/badge/Regeln-84-7a3fc4?style=flat-square">
+  <a href="skills/thesis-editor/CHANGELOG.md"><img alt="thesis-editor 1.0.0, 84 Regeln" src="https://img.shields.io/badge/thesis--editor-1.0.0_%C2%B7_84_Regeln-7a3fc4?style=flat-square"></a>
+  <a href="skills/code-docs/CHANGELOG.md"><img alt="code-docs 0.1.0, 11 Regeln" src="https://img.shields.io/badge/code--docs-0.1.0_%C2%B7_11_Regeln-6366f1?style=flat-square"></a>
   <img alt="Keine Abhängigkeiten" src="https://img.shields.io/badge/dependencies-none-64748b?style=flat-square">
 </p>
 
 <p align="center">
   <b>Ein Agent-Skill, der deine Abschlussarbeit liest wie Lektorat, Erst- und Zweitgutachten zusammen.</b><br>
-  Er markiert, was fehlt oder besser werden kann, und ändert keine einzige Zeile deines Quelltexts.
+  Er markiert, was fehlt oder besser werden kann, und ändert keine einzige Zeile deines Quelltexts.<br>
+  Für den praktischen Teil der Arbeit enthält das Repository außerdem <a href="#code-docs">code-docs</a>, das den Code dokumentiert.
 </p>
 
 <p align="center">
+  <a href="#die-skills">Die Skills</a> ·
   <a href="#installation">Installation</a> ·
+  <a href="#aktualisieren">Aktualisieren</a> ·
   <a href="#schnellstart">Schnellstart</a> ·
   <a href="#was-geprüft-wird">Was geprüft wird</a> ·
   <a href="#ergebnisse">Ergebnisse</a> ·
   <a href="#konfiguration">Konfiguration</a> ·
+  <a href="#code-docs">code-docs</a> ·
   <a href="#english">English</a>
 </p>
 
@@ -42,39 +48,47 @@ Wer eine Abschlussarbeit schreibt, bekommt Rückmeldung meist spät und verstreu
 
 Jeder Befund verweist auf eine Regel mit Begründung, Herkunft und Beispiel. So lässt sich jede Anmerkung prüfen, annehmen oder begründet ablehnen.
 
+## Die Skills
+
+Das Repository enthält zwei Skills, die sich einzeln installieren lassen:
+
+| Skill | Für | Aufruf | Ändert Dateien | Version |
+|---|---|---|---|---|
+| [thesis-editor](#schnellstart) | Lektorat und Gutachten der schriftlichen Arbeit in LaTeX | `/thesis-editor` oder Bitten wie *„Schau mal über Kapitel 5“* | nein, schreibt nur Berichte nach `.thesis-editor/` | [1.0.0](skills/thesis-editor/CHANGELOG.md) |
+| [code-docs](#code-docs) | Dokumentation des praktischen Teils: Docstrings, `ARCHITECTURE.md`, README | nur ausdrücklich mit `/code-docs` | ja, aber nur Docstrings, Kommentare und Dokumentationsdateien | [0.1.0](skills/code-docs/CHANGELOG.md) |
+
 ## Installation
 
-Empfohlen ist die Installation für alle Projekte. Dann steht `/thesis-editor` in jedem Ordner zur Verfügung, in dem du den Agenten startest.
+Empfohlen ist die Installation für alle Projekte. Dann stehen `/thesis-editor` und `/code-docs` in jedem Ordner zur Verfügung, in dem du den Agenten startest.
 
 ```bash
 npx skills add whoismarios/scientific-writing-for-german-business-informatics --global
 ```
 
+Die CLI fragt, welche Skills aus dem Repository installiert werden sollen. Mit `--skill thesis-editor` oder `--skill code-docs` wird nur dieser eine installiert.
+
 Wie bei `npm` gilt: Ohne `--global` installiert die CLI nur in das Projekt, in dem du den Befehl ausführst. Der Skill liegt dann im Projektordner und lässt sich mit dem Projekt teilen.
 
 | Ziel | Befehl | Speicherort bei Claude Code |
 |---|---|---|
-| für alle Projekte (empfohlen) | `npx skills add whoismarios/scientific-writing-for-german-business-informatics --global` | `~/.claude/skills/thesis-editor` |
-| nur für das aktuelle Projekt | `npx skills add whoismarios/scientific-writing-for-german-business-informatics` | `./.claude/skills/thesis-editor` |
+| für alle Projekte (empfohlen) | `npx skills add whoismarios/scientific-writing-for-german-business-informatics --global` | `~/.claude/skills/<skill>` |
+| nur für das aktuelle Projekt | `npx skills add whoismarios/scientific-writing-for-german-business-informatics` | `./.claude/skills/<skill>` |
 
 Ohne weitere Angaben fragt die CLI, für welche Agenten installiert werden soll. Diese Optionen ersetzen die Rückfragen:
 
 | Option | Kurzform | Wirkung | Beispiel |
 |---|---|---|---|
 | `--global` | `-g` | für alle Projekte des Benutzerkontos statt nur für das aktuelle Projekt | `--global` |
+| `--skill <name>` | `-s` | nur diesen Skill installieren, mehrfach angebbar | `--skill code-docs` |
 | `--agent <name>` | `-a` | nur für diese Agenten, mehrfach angebbar | `--agent claude-code --agent codex` |
 | `--yes` | `-y` | keine Rückfragen, etwa für Skripte | `--yes` |
 | `--copy` | | Dateien kopieren statt verlinken | `--copy` |
 | `--list` | `-l` | nur anzeigen, was das Repository enthält, nichts installieren | `--list` |
 
-Aktualisieren und entfernen:
+Entfernen:
 
 ```bash
-npx skills update thesis-editor --global
-```
-
-```bash
-npx skills remove thesis-editor --global
+npx skills remove thesis-editor code-docs --global
 ```
 
 <details>
@@ -82,20 +96,22 @@ npx skills remove thesis-editor --global
 
 <br>
 
-Den Ordner `skills/thesis-editor` in das Skill-Verzeichnis des Agenten kopieren:
+Die Ordner unter `skills/` in das Skill-Verzeichnis des Agenten kopieren:
 
 | Agent | für alle Projekte | nur für ein Projekt |
 |---|---|---|
-| Claude Code | `~/.claude/skills/thesis-editor` | `.claude/skills/thesis-editor` |
-| Codex | `~/.agents/skills/thesis-editor` | `.agents/skills/thesis-editor` |
+| Claude Code | `~/.claude/skills/<skill>` | `.claude/skills/<skill>` |
+| Codex | `~/.agents/skills/<skill>` | `.agents/skills/<skill>` |
 
 ```bash
 git clone https://github.com/whoismarios/scientific-writing-for-german-business-informatics.git
 ```
 
 ```bash
-cp -R scientific-writing-for-german-business-informatics/skills/thesis-editor ~/.claude/skills/
+cp -R scientific-writing-for-german-business-informatics/skills/thesis-editor scientific-writing-for-german-business-informatics/skills/code-docs ~/.claude/skills/
 ```
+
+So installierte Skills aktualisiert `npx skills update` nicht. Für neue Versionen erneut kopieren oder im geklonten Ordner `git pull` ausführen und ihn statt einer Kopie verlinken.
 
 </details>
 
@@ -103,10 +119,46 @@ cp -R scientific-writing-for-german-business-informatics/skills/thesis-editor ~/
 
 | | Wofür | Pflicht |
 |---|---|:---:|
-| Arbeit in LaTeX | Grundlage aller Prüfungen | ✅ |
-| Python 3.11 oder neuer | Skripte, ohne weitere Pakete | ✅ |
+| Python 3.11 oder neuer | Skripte beider Skills, ohne weitere Pakete | ✅ |
+| Arbeit in LaTeX | Grundlage aller Prüfungen von `thesis-editor` | ✅ |
 | `latexmk` | markierte PDF | ➖ |
-| `git` und `gh` | Prüfung der Datensicherung | ➖ |
+| `git` und `gh` | Prüfung der Datensicherung, Update-Prüfung bei privatem Repository | ➖ |
+| `npx` (Node.js) | Installation und Updates | ➖ |
+
+## Aktualisieren
+
+Beide Skills schauen selbst nach neuen Versionen. Bei einem Prüflauf fragt das Skript höchstens einmal am Tag auf GitHub nach, ob es eine neuere Version gibt. Ohne Internetverbindung bleibt es still. Gibt es eine, erledigt der Agent zuerst die eigentliche Aufgabe und sagt dann am Ende, welche Version neu ist und was sich geändert hat. Erst nach deinem Ja aktualisiert er, nie mitten in einem Lauf.
+
+Wer das nicht bestätigen will, schaltet das automatische Update ein. Dann lädt der Agent die neue Version am Ende des Laufs und meldet nur noch, dass sie ab dem nächsten Aufruf gilt. Das gilt für ein Projekt über dessen Konfiguration (`thesis-editor.toml` oder `code-docs.toml`):
+
+```toml
+[update]
+check = true    # nach neuen Versionen schauen
+auto = false    # true: ohne Rückfrage am Ende des Laufs aktualisieren
+```
+
+Für alle Projekte gleichzeitig gelten diese Umgebungsvariablen:
+
+| Variable | Wirkung |
+|---|---|
+| `SKILL_AUTO_UPDATE=1` | automatisches Update überall einschalten |
+| `SKILL_UPDATE_CHECK=0` | nie nach neuen Versionen schauen |
+
+Von Hand aktualisieren:
+
+```bash
+npx skills update thesis-editor code-docs --global
+```
+
+Sofort nachsehen, ohne auf den nächsten Prüflauf zu warten:
+
+```bash
+python3 ~/.claude/skills/thesis-editor/scripts/update.py --force
+```
+
+**Was ein Update nicht anfasst:** Konfiguration, Berichte und Verlauf liegen im Ordner deines Projekts, nicht im Skill, und bleiben erhalten. Konfigurationsschlüssel älterer Versionen funktionieren weiter. Was sich mit jeder Version ändert, steht im Changelog von [thesis-editor](skills/thesis-editor/CHANGELOG.md) und [code-docs](skills/code-docs/CHANGELOG.md). Die Versionen folgen Semantic Versioning: Nur eine neue Hauptversion kann verlangen, dass du etwas anpasst. Neue Regeln können den Lektoratsindex verschieben, das steht dann im Changelog.
+
+Das Ergebnis der Nachfrage merkt sich das Skript einen Tag lang in `~/.cache/scientific-writing-skills/`. Wer den Skill aus einem geklonten Repository verlinkt hat, bekommt statt eines Updates den Hinweis auf `git pull`.
 
 ## Schnellstart
 
@@ -260,6 +312,80 @@ python3 ~/.claude/skills/thesis-editor/scripts/cli.py check
 
 </details>
 
+## code-docs
+
+Der zweite Skill im Repository dokumentiert den Code einer Arbeit oder eines beliebigen Projekts. Python, TypeScript und JavaScript prüft er mechanisch, für Java, C#, R und Go schreibt er die Dokumentation nach der jeweiligen Konvention ohne mechanische Prüfung. Er ändert nur Docstrings, Kommentare und Dokumentationsdateien, nie die Programmlogik.
+
+| Ebene | Ort | Inhalt |
+|---|---|---|
+| Docstrings | an jeder öffentlichen Funktion und Klasse | Einzeiler, Parameter und Rückgabewert nach den Google Style Guides, in Python als Docstring, in TypeScript und JavaScript als JSDoc |
+| `ARCHITECTURE.md` | Projektwurzel | Module, Datenfluss, Grenzen und wo man mit dem Lesen anfängt |
+| `README.md` | Projektwurzel | Zweck, Voraussetzungen, Einrichtung, Umgebungsvariablen, Start, Tests |
+
+```text
+/code-docs
+```
+
+| Befehl | Wirkung |
+|---|---|
+| `/code-docs` | prüft und fasst die Lücken zusammen, ändert nichts |
+| `/code-docs docstrings <pfad>` | dokumentiert Funktionen und Klassen in dieser Datei oder diesem Ordner |
+| `/code-docs architecture` | schreibt oder aktualisiert `ARCHITECTURE.md` |
+| `/code-docs readme` | gleicht die README mit dem Code ab |
+| `/code-docs all` | alle drei Schritte nacheinander |
+
+Ein Skript findet die mechanischen Lücken: fehlende Docstrings, dokumentierte Parameter, die es nicht mehr gibt, Befehle in der README ohne passendes Skript, Pfade, die nicht existieren, und Umgebungsvariablen aus `.env.example`, die nirgends beschrieben sind. Den Text schreibt der Agent, nachdem er den Code gelesen hat.
+
+### Grundlage
+
+Damit sich nachvollziehen lässt, wie der Code dokumentiert ist, folgt der Skill veröffentlichten Standards. Jede Regel nennt ihre Quelle, `check.py --rules` listet sie auf.
+
+| Ebene | Standard |
+|---|---|
+| Python | [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html#s3.8-comments-and-docstrings), Abschnitt 3.8, aufbauend auf [PEP 257](https://peps.python.org/pep-0257/) |
+| TypeScript | [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html#comments-documentation), Abschnitt „Comments and documentation“, Tags nach [JSDoc](https://jsdoc.app/) und [TSDoc](https://tsdoc.org/) |
+| JavaScript | [Google JavaScript Style Guide](https://google.github.io/styleguide/jsguide.html#jsdoc), Abschnitt 7 „JSDoc“ |
+| Java | [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html#s7-javadoc), Abschnitt 7 „Javadoc“, Formulierung nach [Oracle](https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html) |
+| C# | Microsoft, [XML documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/) |
+| R | [roxygen2](https://roxygen2.r-lib.org/articles/rd.html) und [Tidyverse style guide](https://style.tidyverse.org/documentation.html), Kapitel 7 |
+| Go | [Go Doc Comments](https://go.dev/doc/comment) |
+| `ARCHITECTURE.md` | Kladov (2021), [ARCHITECTURE.md](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html) |
+| README | [Standard Readme](https://github.com/RichardLitt/standard-readme) und GitHub, [About READMEs](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes) |
+
+In der Arbeit lässt sich das so belegen: *„Die Dokumentation des Quellcodes folgt dem Google Python Style Guide (Abschnitt 3.8) und dem Google TypeScript Style Guide.“* Die Style Guides haben keine Versionsnummern, deshalb gehört das Abrufdatum in das Literaturverzeichnis. Wo der Skill von den Guides abweicht, steht mit Begründung in der [SKILL.md](skills/code-docs/SKILL.md) unter *Standards and sources*.
+
+### Stil und Konfiguration
+
+Regeln des Projekts haben Vorrang. Steht in `AGENTS.md`, `CLAUDE.md` oder der Linter-Konfiguration etwas anderes, etwa nur Einzeiler, folgt der Skill dem Projekt. Der Stil lässt sich in einer `code-docs.toml` festlegen:
+
+| `style` | Verlangt | Grundlage |
+|---|---|---|
+| `google` (Standard) | Einzeiler genügt, wenn Name und Signatur alles sagen. Sonst Parameter und Rückgabewert | wie in den Google Style Guides |
+| `full` | Einzeiler, alle Parameter und Rückgabewert an jeder öffentlichen Funktion | strenger als die Guides, als Hausregel |
+| `summary` | nur ein Docstring, ohne Parameter und Rückgabewert | lockerer als die Guides |
+
+```toml
+style = "google"
+private = false    # auch _private Funktionen dokumentieren
+min_lines = 0      # kürzere Funktionen auslassen
+exclude = ["*/generated/*"]
+```
+
+Die Prüfung läuft auch ohne Agent:
+
+```bash
+python3 ~/.claude/skills/code-docs/scripts/check.py .
+```
+
+| Option | Wirkung | Beispiel |
+|---|---|---|
+| `--only <bereiche>` | nur `code`, `readme` oder `arch`, kommagetrennt | `--only readme` |
+| `--since <rev>` | nur Code, der seit dieser Git-Revision geändert wurde | `--since HEAD~1` |
+| `--json` | Befunde als JSON | `--json` |
+| `--rules` | alle Regeln mit Schwere und Quelle | `--rules` |
+
+Voraussetzung ist Python 3.11 oder neuer. Mechanisch geprüft werden Python, TypeScript und JavaScript. Dateien in Java, C#, R und Go zählt die Prüfung unter „not checked mechanically“ auf, damit sichtbar bleibt, was nur von Hand dokumentiert wurde.
+
 ## Mitwirken
 
 Neue Regeln sind willkommen. Jede Regel steht in [rules.toml](skills/thesis-editor/rules.toml), und jede mechanische Regel braucht einen Testfall mit `% expect: REGEL-ID` in `skills/thesis-editor/evals/fixture/`.
@@ -272,7 +398,15 @@ python3 skills/thesis-editor/scripts/cli.py rules
 python3 skills/thesis-editor/evals/run_evals.py
 ```
 
-Eine Änderung ist fertig, wenn alle Testfälle weiter durchlaufen. Das Skript zeigt je Regel erwartete, fehlende und unerwartete Treffer.
+Für `code-docs` stehen die Testfälle als `expect: REGEL-ID` in Kommentaren unter `skills/code-docs/evals/fixture/`. `expect-full:` gilt nur für den Stil `full`, das Skript prüft beide Stile:
+
+```bash
+python3 skills/code-docs/evals/run_evals.py
+```
+
+Eine Änderung ist fertig, wenn alle Testfälle weiter durchlaufen.
+
+Jede Veröffentlichung erhöht die Version in der Datei `VERSION` des Skills und bekommt einen Eintrag in dessen `CHANGELOG.md`. Erst dadurch sehen Nutzer das Update. Korrekturen erhöhen die letzte Stelle, neue Regeln und Funktionen die mittlere, Änderungen, die Nutzer zum Anpassen zwingen, die erste. Umbenannte Konfigurationsschlüssel bleiben als alte Namen lesbar. Jede Version bekommt im Repository einen Tag nach dem Muster `<skill>-vX.Y.Z`, etwa `thesis-editor-v1.0.0`, damit sich ein Stand eindeutig zitieren lässt. Das Skript zeigt je Regel erwartete, fehlende und unerwartete Treffer.
 
 Skill, Befehle, Optionen, Konfigurationsschlüssel und Dateinamen sind englisch. Regeln, Meldungen und Berichte sind deutsch, weil sie deutsche Texte prüfen und von der schreibenden Person gelesen werden.
 
@@ -284,7 +418,11 @@ Skill, Befehle, Optionen, Konfigurationsschlüssel und Dateinamen sind englisch.
 npx skills add whoismarios/scientific-writing-for-german-business-informatics --global
 ```
 
+Both skills check GitHub at most once a day for a newer version, report it at the end of a run and update after confirmation, or automatically with `auto = true` under `[update]` or `SKILL_AUTO_UPDATE=1`. Changes are listed in each skill's `CHANGELOG.md`.
+
 Run `/thesis-editor` inside your thesis folder, optionally followed by `chapter <name>`, `since <rev>`, `full`, `submit` or `defense` (question catalogue for the oral defense). The check also reads the LaTeX and biber logs of the last build. Commands, flags and config keys are English. Rules, findings and reports are German.
+
+The repository also contains `code-docs`, a skill that documents code following published style guides (Google for Python, TypeScript, JavaScript and Java, Microsoft for C#, roxygen2 for R, Go Doc Comments), with a mechanical check for Python, TypeScript and JavaScript: docstrings and JSDoc with summary, parameters and return value, an `ARCHITECTURE.md`, and a README whose commands, paths and environment variables match the project. It only changes documentation, never program logic. Install it alone with `--skill code-docs` and run `/code-docs`.
 
 ## Lizenz
 

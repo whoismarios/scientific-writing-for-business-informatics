@@ -178,6 +178,16 @@ Keep the chat answer short and prioritized, in German:
 
 In mode `submit` also output the checklist from `references/chapter-checklists.md` (section Abgabe) with done or open per item.
 
+## Updates
+
+The check summary has an `Update:` line with the installed version. The script asks GitHub at most once a day, stays silent when offline, and can be switched off. If a newer version is available, the line names it and lists the new changelog entries below it.
+
+- **Automatic update off (default):** finish the task, then tell the person once at the end of the answer: the new version, the one to three changes that matter to them, and the question whether to update. On yes, run `python3 <skill-dir>/scripts/update.py apply` and report its result. After a no, do not ask again in the same conversation.
+- **Automatic update on** (`auto = true` under `[update]` in `thesis-editor.toml`, or `SKILL_AUTO_UPDATE=1`): finish the task, then run `update.py apply` without asking and report in one line that the new version was loaded and applies from the next call, with the main changes.
+- **Never update in the middle of a run.** The scripts would change under the running task.
+- **Installed from a Git checkout:** `apply` only prints the hint to run `git pull`. Pass it on, never pull yourself.
+- If the line says the check is disabled or GitHub is not reachable, say nothing about updates.
+
 ## Exceptions
 
 A finding that should stay on purpose is excluded in the source. That keeps the decision visible and defensible.

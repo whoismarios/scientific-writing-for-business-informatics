@@ -25,6 +25,7 @@ DEFAULT_CONFIG = {
     "severity": {},
     "project_rules": [],
     "exceptions": {"words": []},
+    "update": {"check": True, "auto": False},
 }
 
 

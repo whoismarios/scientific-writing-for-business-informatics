@@ -47,6 +47,10 @@ words = []                            # words that are never reported, e.g. "opt
 [research_questions]
 # FF1 = "Wortlaut der ersten Forschungsfrage"
 
+[update]
+check = true                          # look for a newer version on GitHub at most once a day
+auto = false                          # install it at the end of a run and only report it
+
 [git]
 enabled = true                        # versioning check (private repo, uncommitted and unpushed changes)
 check_visibility = true               # ask the GitHub CLI whether the repository is private
