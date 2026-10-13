@@ -2,6 +2,10 @@
 
 Alle Änderungen an `code-docs`. Die Versionen folgen [Semantic Versioning](https://semver.org/lang/de/): Eine neue Hauptversion ändert die Konfiguration so, dass etwas angepasst werden muss. Neue Regeln und Funktionen erhöhen die mittlere Stelle, Korrekturen die letzte. Vor 1.0.0 können sich Regeln und Optionen noch ändern.
 
+## Unreleased
+
+- Neue Adresse des Repositorys: github.com/whoismarios/scientific-writing-for-business-informatics. Die alte Adresse leitet weiter
+
 ## 0.1.0 (2026-10-13)
 
 - Erste Version: Docstrings nach Google-Stil für Python, JSDoc für TypeScript und JavaScript, `ARCHITECTURE.md` und Abgleich der README mit dem Code

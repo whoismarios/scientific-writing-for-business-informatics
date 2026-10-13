@@ -12,7 +12,7 @@ import time
 import urllib.request
 from pathlib import Path
 
-REPO = "whoismarios/scientific-writing-for-german-business-informatics"
+REPO = "whoismarios/scientific-writing-for-business-informatics"
 BRANCH = "main"
 SKILL_DIR = Path(__file__).resolve().parent.parent
 TTL = 24 * 3600

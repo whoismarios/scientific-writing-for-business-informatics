@@ -62,7 +62,7 @@ Das Repository enthält zwei Skills, die sich einzeln installieren lassen:
 Empfohlen ist die Installation für alle Projekte. Dann stehen `/thesis-editor` und `/code-docs` in jedem Ordner zur Verfügung, in dem du den Agenten startest.
 
 ```bash
-npx skills add whoismarios/scientific-writing-for-german-business-informatics --global
+npx skills add whoismarios/scientific-writing-for-business-informatics --global
 ```
 
 Die CLI fragt, welche Skills aus dem Repository installiert werden sollen. Mit `--skill thesis-editor` oder `--skill code-docs` wird nur dieser eine installiert.
@@ -71,8 +71,8 @@ Wie bei `npm` gilt: Ohne `--global` installiert die CLI nur in das Projekt, in d
 
 | Ziel | Befehl | Speicherort bei Claude Code |
 |---|---|---|
-| für alle Projekte (empfohlen) | `npx skills add whoismarios/scientific-writing-for-german-business-informatics --global` | `~/.claude/skills/<skill>` |
-| nur für das aktuelle Projekt | `npx skills add whoismarios/scientific-writing-for-german-business-informatics` | `./.claude/skills/<skill>` |
+| für alle Projekte (empfohlen) | `npx skills add whoismarios/scientific-writing-for-business-informatics --global` | `~/.claude/skills/<skill>` |
+| nur für das aktuelle Projekt | `npx skills add whoismarios/scientific-writing-for-business-informatics` | `./.claude/skills/<skill>` |
 
 Ohne weitere Angaben fragt die CLI, für welche Agenten installiert werden soll. Diese Optionen ersetzen die Rückfragen:
 
@@ -104,11 +104,11 @@ Die Ordner unter `skills/` in das Skill-Verzeichnis des Agenten kopieren:
 | Codex | `~/.agents/skills/<skill>` | `.agents/skills/<skill>` |
 
 ```bash
-git clone https://github.com/whoismarios/scientific-writing-for-german-business-informatics.git
+git clone https://github.com/whoismarios/scientific-writing-for-business-informatics.git
 ```
 
 ```bash
-cp -R scientific-writing-for-german-business-informatics/skills/thesis-editor scientific-writing-for-german-business-informatics/skills/code-docs ~/.claude/skills/
+cp -R scientific-writing-for-business-informatics/skills/thesis-editor scientific-writing-for-business-informatics/skills/code-docs ~/.claude/skills/
 ```
 
 So installierte Skills aktualisiert `npx skills update` nicht. Für neue Versionen erneut kopieren oder im geklonten Ordner `git pull` ausführen und ihn statt einer Kopie verlinken.
@@ -415,7 +415,7 @@ Skill, Befehle, Optionen, Konfigurationsschlüssel und Dateinamen sind englisch.
 `thesis-editor` is an agent skill for Claude Code, Codex and other agents that reviews German academic writing in LaTeX, tailored to business informatics (Wirtschaftsinformatik). A deterministic linter checks typography, language, citations, bibliography, cross-references, lists of figures and tables, the LaTeX build log, and whether the work is safely versioned in Git. Five reviewer agents check content, method, formulas, coherence and whether sources support the claims. The result is an HTML report with history and an annotated PDF. The source is never modified.
 
 ```bash
-npx skills add whoismarios/scientific-writing-for-german-business-informatics --global
+npx skills add whoismarios/scientific-writing-for-business-informatics --global
 ```
 
 Both skills check GitHub at most once a day for a newer version, report it at the end of a run and update after confirmation, or automatically with `auto = true` under `[update]` or `SKILL_AUTO_UPDATE=1`. Changes are listed in each skill's `CHANGELOG.md`.
